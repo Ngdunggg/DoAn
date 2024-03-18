@@ -579,11 +579,11 @@
                   <Component id="jLabel8" alignment="1" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="jTextField2" min="-2" pref="330" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="btNV_QL" min="-2" pref="148" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                              <Component id="btNV_QL" min="-2" pref="160" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="btVe_QL" min="-2" pref="120" max="-2" attributes="0"/>
                           </Group>
                       </Group>
