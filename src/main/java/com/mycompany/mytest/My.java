@@ -194,6 +194,7 @@ public class My extends javax.swing.JFrame {
             new Home().setVisible(true);
         }
         else if (name.equals("nv1") && pass.equals("nv1")){
+            this.dispose();
             new HomeForNV().setVisible(true);
         }
         else{
