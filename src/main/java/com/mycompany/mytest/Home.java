@@ -349,9 +349,9 @@ public class Home extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Vé A",  new Long(3000)},
-                {"Vé B",  new Long(5000)},
-                {"Vé C",  new Long(20000)},
+                {"Vé A", Long.valueOf(3000)},
+                {"Vé B", Long.valueOf(5000)},
+                {"Vé C", Long.valueOf(20000)},
                 {null, null}
             },
             new String [] {

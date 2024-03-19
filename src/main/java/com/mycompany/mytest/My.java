@@ -138,7 +138,7 @@ public class My extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        bgimg.setIcon(new javax.swing.ImageIcon("E:\\linhtinh\\DoAnOOP\\MyProject\\image\\img.png")); // NOI18N
+        bgimg.setIcon(new javax.swing.ImageIcon("C:\\Workspace\\Tai lieu\\Do_an_oop\\DoAn\\img.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
