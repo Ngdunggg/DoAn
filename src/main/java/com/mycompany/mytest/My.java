@@ -4,7 +4,10 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.database;
+
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
 
 /**
  *
@@ -72,7 +75,11 @@ public class My extends javax.swing.JFrame {
         loginButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
+                try {
+                    loginButtonActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -138,7 +145,7 @@ public class My extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        bgimg.setIcon(new javax.swing.ImageIcon("C:\\Workspace\\Tai lieu\\Do_an_oop\\DoAn\\img.png")); // NOI18N
+        bgimg.setIcon(new javax.swing.ImageIcon("./img.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -186,9 +193,10 @@ public class My extends javax.swing.JFrame {
                 }
     }//GEN-LAST:event_showPassActionPerformed
 
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_loginButtonActionPerformed
         String name = userText.getText();
         String pass = passText.getText();
+        database.connectDb();
         if (name.equals("admin") && pass.equals("123")){
             this.dispose();
             new Home().setVisible(true);
