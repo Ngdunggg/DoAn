@@ -5,6 +5,7 @@
 package com.mycompany.mytest;
 
 import BackEnd.Database.database;
+import BackEnd.Database.login;
 
 import javax.swing.JOptionPane;
 import java.sql.SQLException;
@@ -197,16 +198,24 @@ public class My extends javax.swing.JFrame {
         String name = userText.getText();
         String pass = passText.getText();
         database.connectDb();
-        if (name.equals("admin") && pass.equals("123")){
+        var result = login.getLoginInfomation(name);
+        String username, password, role;
+        username = result.get("username");
+        password = result.get("password");
+        role = result.get("role");
+
+        System.out.println(pass.equals(password));
+
+        if ((name.equals(username)) && (pass.equals(password)) && (role.equals("admin"))){
             this.dispose();
             new Home().setVisible(true);
         }
-        else if (name.equals("nv1") && pass.equals("nv1")){
+        else if ((name.equals(username)) && (pass.equals(password)) && (role.equals("nv"))){
             this.dispose();
             new HomeForNV().setVisible(true);
         }
         else{
-            JOptionPane.showMessageDialog(null,"Tài khoản hoặc mật khẩu không hợp lệ!");
+            JOptionPane.showMessageDialog(null,"mật khẩu hoặc tài khoản k hợp lệ");
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
