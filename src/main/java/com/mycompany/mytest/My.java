@@ -4,7 +4,11 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.database;
+import BackEnd.Database.login;
+
 import javax.swing.JOptionPane;
+import java.sql.SQLException;
 
 /**
  *
@@ -72,7 +76,11 @@ public class My extends javax.swing.JFrame {
         loginButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
+                try {
+                    loginButtonActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -186,19 +194,28 @@ public class My extends javax.swing.JFrame {
                 }
     }//GEN-LAST:event_showPassActionPerformed
 
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_loginButtonActionPerformed
         String name = userText.getText();
         String pass = passText.getText();
-        if (name.equals("admin") && pass.equals("123")){
+        database.connectDb();
+        var result = login.getLoginInfomation(name);
+        String username, password, role;
+        username = result.get("username");
+        password = result.get("password");
+        role = result.get("role");
+
+        System.out.println(pass.equals(password));
+
+        if ((name.equals(username)) && (pass.equals(password)) && (role.equals("admin"))){
             this.dispose();
             new Home().setVisible(true);
         }
-        else if (name.equals("nv1") && pass.equals("nv1")){
+        else if ((name.equals(username)) && (pass.equals(password)) && (role.equals("nv"))){
             this.dispose();
             new HomeForNV().setVisible(true);
         }
         else{
-            JOptionPane.showMessageDialog(null,"Tài khoản hoặc mật khẩu không hợp lệ!");
+            JOptionPane.showMessageDialog(null,"mật khẩu hoặc tài khoản k hợp lệ");
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
