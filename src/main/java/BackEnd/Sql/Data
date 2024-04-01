@@ -1,0 +1,45 @@
+-- Chèn dữ liệu vào bảng PARKING_AREA
+INSERT INTO PARKING_AREA (Id, name, motor_lot, car_lot) VALUES
+(1, 'Parking Area A', 200, 20),
+(2, 'Parking Area B', 300, 30),
+(3, 'Parking Area C', 400, 40);
+
+-- Chèn dữ liệu vào bảng Ticket_type
+INSERT INTO Ticket_type (id, name, cost) VALUES
+(1, 'N_01', 5000),
+(2, 'N_02', 30000),
+(3, 'T_01', 100000),
+(4, 'T_02', 800000);
+
+-- Chèn dữ liệu vào bảng Employee
+INSERT INTO Employee (id, first_name, last_name, dob, phone_num, address, username, user_role, user_password) VALUES
+('EMP001', 'Nguyễn', 'Văn Dũng', '1990-05-15', '123456789', '123 Đường A, Phường B, Quận C, Thành phố D', 'nguyvandung', 'admin', '123'),
+('EMP002', 'Trần', 'Thị Bùi', '1985-08-20', '987654321', '456 Đường X, Phường Y, Quận Z, Thành phố W', 'tranthibui', 'nv', '123'),
+('EMP003', 'Lê', 'Minh Cương', '1978-11-10', '456123789', '789 Đường Q, Phường R, Quận S, Thành phố T', 'leminhcuong', 'nv', '123');
+
+
+-- Chèn dữ liệu vào bảng Vehicle
+INSERT INTO Vehicle (id, parking_area_id) VALUES
+('30-01 ABC 123', 1),
+('31-02 XYZ 456', 2),
+('14-03 DEF 789', 3),
+('15-04 GHI 321', 1),
+('61-05 KLM 654', 2),
+('99-06 NOP 987', 3),
+('18-07 QRS 012', 1),
+('36-08 TUV 345', 2),
+('20-09 WXY 678', 3),
+('26-10 ZAB 901', 1);
+
+-- Chèn dữ liệu vào bảng Ticket
+INSERT INTO Ticket (Id, ticket_type_id, time_in, time_out, out_date, vehicle_id, area_id, emp_id) VALUES
+('T001', 1, '2024-03-30 08:00:00', '2024-03-30 12:00:00', '2024-03-30 12:00:00', '30-01 ABC 123', 1, 'EMP001'),
+('T002', 2, '2024-03-30 10:00:00', '2024-03-30 15:00:00', '2024-03-30 15:00:00', '31-02 XYZ 456', 2, 'EMP002'),
+('T003', 3, '2024-03-30 09:00:00', '2024-03-30 14:00:00', '2024-03-30 14:00:00', '14-03 DEF 789', 3, 'EMP003'),
+('T004', 4, '2024-03-30 07:00:00', '2024-03-30 11:00:00', '2024-03-30 11:00:00', '15-04 GHI 321', 1, 'EMP001'),
+('T005', 1, '2024-03-30 12:00:00', '2024-03-30 17:00:00', '2024-03-30 17:00:00', '61-05 KLM 654', 2, 'EMP002'),
+('T006', 2, '2024-03-30 11:00:00', '2024-03-30 16:00:00', '2024-03-30 16:00:00', '99-06 NOP 987', 3, 'EMP003'),
+('T007', 3, '2024-03-30 06:00:00', '2024-03-30 10:00:00', '2024-03-30 10:00:00', '18-07 QRS 012', 1, 'EMP001'),
+('T008', 4, '2024-03-30 13:00:00', '2024-03-30 18:00:00', '2024-03-30 18:00:00', '36-08 TUV 345', 2, 'EMP002'),
+('T009', 1, '2024-03-30 08:30:00', '2024-03-30 13:30:00', '2024-03-30 13:30:00', '20-09 WXY 678', 3, 'EMP003'),
+('T010', 2, '2024-03-30 05:30:00', '2024-03-30 09:30:00', '2024-03-30 09:30:00', '26-10 ZAB 901', 1, 'EMP001');

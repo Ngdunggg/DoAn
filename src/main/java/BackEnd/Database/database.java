@@ -12,7 +12,7 @@ public class database {
     public static void connectDb() throws SQLException {
         String url = "jdbc:postgresql://localhost:5432/db-do-an";
         String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String password = "Dung0107@";
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
