@@ -1145,7 +1145,7 @@ public class HomeForNV extends javax.swing.JFrame {
 
     private void btTKLuotGuiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotGuiActionPerformed
         this.dispose();
-        new LuotGuiXe().setVisible(true);
+        new LuotGuiXeNv().setVisible(true);
     }//GEN-LAST:event_btTKLuotGuiActionPerformed
 
     private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed

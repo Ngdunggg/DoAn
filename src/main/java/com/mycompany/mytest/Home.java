@@ -4,7 +4,15 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.database;
+import BackEnd.Database.homeAdmin;
+import com.sun.tools.jconsole.JConsoleContext;
+
+import javax.management.ValueExp;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.SQLException;
+import java.util.Vector;
 
 /**
  *
@@ -125,10 +133,39 @@ public class Home extends javax.swing.JFrame {
         btGiaVe.setForeground(new java.awt.Color(255, 255, 255));
         btGiaVe.setText("Giá vé");
         btGiaVe.setBorder(null);
+
         btGiaVe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btGiaVeActionPerformed(evt);
+                DefaultTableModel tableModel = new DefaultTableModel();
+                String[] colsName = {"Loại vé", "Giá vé"};
+                tableModel.setColumnIdentifiers(colsName);
+                jTable2.setModel(tableModel);
+                try {
+                    database.connectDb();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                var result = homeAdmin.getTicketTypeInfo();
+                String motor_day_cost = result.get("motor_day_cost");
+                String motor_month_cost = result.get("motor_month_cost");
+                String car_day_cost = result.get("car_day_cost");
+                String car_month_cost = result.get("car_month_cost");
+                String rows[] = new String[2];
+                rows[0] = "Vé ngày xe máy";
+                rows[1] = motor_day_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé tháng xe máy";
+                rows[1] = motor_month_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé ngày ô tô";
+                rows[1] = car_day_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé tháng ô tô";
+                rows[1] = car_month_cost;
+                tableModel.addRow(rows);
             }
+
         });
 
         btThongKe.setBackground(new java.awt.Color(51, 51, 51));
@@ -519,6 +556,7 @@ public class Home extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtGiaVeThangXeMayActionPerformed(evt);
             }
+
         });
 
         btCapNhatGiaVe.setBackground(new java.awt.Color(102, 102, 102));
@@ -527,19 +565,78 @@ public class Home extends javax.swing.JFrame {
         btCapNhatGiaVe.setText("Cập nhật");
         btCapNhatGiaVe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCapNhatGiaVeActionPerformed(evt);
+                String motorbike = txtGiaVeXeMay.getText();
+                String car = txtGiaVeOto.getText();
+                String car_month = txtGiaVeThangOto.getText();
+                String motorbike_month = txtGiaVeThangXeMay.getText();
+                System.out.print(motorbike);
+                if(!motorbike.equals("")) {
+                    try {
+                        homeAdmin.updateTicketTypeInfo("motorbike_day", motorbike);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if(!car.equals("")) {
+                    try {
+                        homeAdmin.updateTicketTypeInfo("car_day", car);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if(!car_month.equals("")) {
+                    try {
+                        homeAdmin.updateTicketTypeInfo("car_month", car_month);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if(!motorbike_month.equals("")) {
+                    try {
+                        homeAdmin.updateTicketTypeInfo("motorbike_month", motorbike_month);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                DefaultTableModel tableModel = new DefaultTableModel();
+                String[] colsName = {"Loại vé", "Giá vé"};
+                tableModel.setColumnIdentifiers(colsName);
+                jTable2.setModel(tableModel);
+                try {
+                    database.connectDb();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                var result = homeAdmin.getTicketTypeInfo();
+                String motor_day_cost = result.get("motor_day_cost");
+                String motor_month_cost = result.get("motor_month_cost");
+                String car_day_cost = result.get("car_day_cost");
+                String car_month_cost = result.get("car_month_cost");
+                String rows[] = new String[2];
+                rows[0] = "Vé ngày xe máy";
+                rows[1] = motor_day_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé tháng xe máy";
+                rows[1] = motor_month_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé ngày ô tô";
+                rows[1] = car_day_cost;
+                tableModel.addRow(rows);
+                rows[0] = "Vé tháng ô tô";
+                rows[1] = car_month_cost;
+                tableModel.addRow(rows);
             }
         });
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"Vé A",  new Long(3000)},
-                {"Vé B",  new Long(5000)},
-                {"Vé C",  new Long(20000)},
-                {null, null}
+                {"Vé ngày xe máy"},
+                {"Vé tháng xe máy"},
+                {"Vé ngày ô tô"},
+                {"Vé tháng ô tô"}
             },
             new String [] {
-                "Loại Vé", "Giá Vé"
+                "Loại Vé"
             }
         ) {
             Class[] types = new Class [] {
@@ -558,7 +655,7 @@ public class Home extends javax.swing.JFrame {
 
         jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel27.setText("Vé tháng xe máy");
+        jLabel27.setText("Vé tháng ô tô");
 
         txtGiaVeThangOto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -808,6 +905,7 @@ public class Home extends javax.swing.JFrame {
 
     private void btGiaVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGiaVeActionPerformed
         switchPanel(Show, plGiaVe);
+
     }//GEN-LAST:event_btGiaVeActionPerformed
 
     private void btThemNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemNVActionPerformed
