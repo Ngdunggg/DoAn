@@ -3,9 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.mytest;
-
-import javax.swing.*;
-
 /**
  *
  * @author ASUS
@@ -305,10 +302,7 @@ public class LuotDKVeThang extends javax.swing.JFrame {
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
-        var thongKe = new HomeForNV();
-
-//        new HomeForNV().switchPanel(thongKe.plThongKe);
-        new HomeForNV();
+        new HomeForNV().showPlThongKe();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
@@ -317,7 +311,7 @@ public class LuotDKVeThang extends javax.swing.JFrame {
 
     private void btQuayLai1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLai1ActionPerformed
         this.dispose();
-        new HomeForNV();
+        new HomeForNV().setVisible(true);
     }//GEN-LAST:event_btQuayLai1ActionPerformed
 
     /**
@@ -378,7 +372,5 @@ public class LuotDKVeThang extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser txtDateDau;
     private javax.swing.JTextField txtTongLuotDKVe;
     private javax.swing.JTextField txtTongTien;
-
-
     // End of variables declaration//GEN-END:variables
 }

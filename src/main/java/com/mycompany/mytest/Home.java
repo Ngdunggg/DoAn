@@ -25,6 +25,7 @@ public class Home extends javax.swing.JFrame {
         System.out.println("home");
         initComponents();
         setLocationRelativeTo(null);
+        showTable(jTable1, plNV);
     }
     public void switchPanel(JPanel Panel, JPanel panel){
         Panel.removeAll();
@@ -32,6 +33,55 @@ public class Home extends javax.swing.JFrame {
         Panel.repaint();
         Panel.revalidate();
         
+    }
+
+     public void showTable(JTable table, JPanel panel) {
+         DefaultTableModel tableModel = new DefaultTableModel();
+         String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
+         tableModel.setColumnIdentifiers(colsName);
+         String url = "jdbc:postgresql://localhost:5432/db_do_an";
+         String usernameSql = "postgres";
+         String passwordSql = "hanhtinhsongsong";
+         Statement st;
+         try {
+             Connection connection = DriverManager.getConnection(url, usernameSql, passwordSql);
+             st = connection.createStatement();
+             System.out.println("Success connect to db");
+             String sql = "select id, full_name, dob, phone_num, address, user_role, username, user_password from employee order by id asc";
+             ResultSet resultSet = st.executeQuery(sql);
+             while(resultSet.next()) {
+                 String row[] = new String[8];
+                 row[0] = resultSet.getString(1);
+                 row[1] = resultSet.getString(2);
+                 row[2] = resultSet.getString(3);
+                 row[3] = resultSet.getString(4);
+                 row[4] = resultSet.getString(5);
+                 row[5] = resultSet.getString(6);
+                 row[6] = resultSet.getString(7);
+                 row[7] = resultSet.getString(8);
+                 tableModel.addRow(row);
+             }
+         } catch (SQLException e) {
+             e.printStackTrace();
+         }
+         table.setModel(tableModel);
+         switchPanel(Show, panel);
+     }
+
+     public void resetTxtNv() {
+         txtTenNV.setText(null);
+         txtMaNV.setText(null);
+         txtVaiTro.setText(null);
+         txtDiaChi.setText(null);
+         txtNamSinh.setText(null);
+         txtSDT.setText(null);
+         txtUsername.setText(null);
+         txtPassword.setText(null);
+     }
+
+    public void showPlThongKe() {
+        switchPanel(Show, plThongKe);
+        this.setVisible(true);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -934,14 +984,9 @@ public class Home extends javax.swing.JFrame {
         String password = txtPassword.getText();
         database.connectDb();
         homeAdmin.insertToEmp(name, address, dob, phone_num, username, password, role);
-//        System.out.println("name: " + name);
-//        System.out.println("mnv: " + mnv);
-//        System.out.println("role: " + role);
-//        System.out.println("address: " + address);
-//        System.out.println("dob: " + dob);
-//        System.out.println("phone: " + phone_num);
-//        System.out.println("username: " + username);
-//        System.out.println("pass: " + password);
+        JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        resetTxtNv();
+        showTable(jTable1, plNV);
     }//GEN-LAST:event_btThemNVActionPerformed
 
     private void btSuaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaNVActionPerformed
@@ -962,36 +1007,7 @@ public class Home extends javax.swing.JFrame {
 
     private void btNvActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btNvActionPerformed
         System.out.println("nhan vien");
-        DefaultTableModel tableModel = new DefaultTableModel();
-        String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
-        tableModel.setColumnIdentifiers(colsName);
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
-        Statement st;
-        try {
-            Connection connection = DriverManager.getConnection(url, username, password);
-            st = connection.createStatement();
-            System.out.println("Success connect to db");
-            String sql = "select id, full_name, dob, phone_num, address, user_role, username, user_password from employee order by id asc";
-            ResultSet resultSet = st.executeQuery(sql);
-            while(resultSet.next()) {
-                String row[] = new String[8];
-                row[0] = resultSet.getString(1);
-                row[1] = resultSet.getString(2);
-                row[2] = resultSet.getString(3);
-                row[3] = resultSet.getString(4);
-                row[4] = resultSet.getString(5);
-                row[5] = resultSet.getString(6);
-                row[6] = resultSet.getString(7);
-                row[7] = resultSet.getString(8);
-                tableModel.addRow(row);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        jTable1.setModel(tableModel);
-        switchPanel(Show, plNV);
+        showTable(jTable1, plNV);
     }//GEN-LAST:event_btNvActionPerformed
 
     private void btThongKeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThongKeActionPerformed
@@ -1086,7 +1102,7 @@ public class Home extends javax.swing.JFrame {
 
     private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
        this.dispose();
-       new LuotDKVeThang().setVisible(true);
+       new LuotDKVeThangAdmin().setVisible(true);
     }//GEN-LAST:event_btTKLuotDKVeThangActionPerformed
 
     private void btThoatCTrinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThoatCTrinhActionPerformed

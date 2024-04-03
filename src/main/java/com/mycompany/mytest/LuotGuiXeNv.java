@@ -293,7 +293,7 @@ public class LuotGuiXeNv extends javax.swing.JFrame {
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
-        new HomeForNV().setVisible(true);
+        new HomeForNV().showPlThongKe();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
     /**
