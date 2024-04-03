@@ -10,7 +10,7 @@ public class database {
     private static Statement st;
 
     public static void connectDb() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/db-do-an";
+        String url = "jdbc:postgresql://localhost:5432/db_do_an";
         String username = "postgres";
         String password = "hanhtinhsongsong";
 
@@ -18,7 +18,6 @@ public class database {
             Connection con = DriverManager.getConnection(url, username, password);
             st = con.createStatement();
             System.out.println("success connect to db");
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

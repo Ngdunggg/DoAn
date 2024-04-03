@@ -6,13 +6,11 @@ package com.mycompany.mytest;
 
 import BackEnd.Database.database;
 import BackEnd.Database.homeAdmin;
-import com.sun.tools.jconsole.JConsoleContext;
 
-import javax.management.ValueExp;
+import javax.sound.midi.SysexMessage;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.SQLException;
-import java.util.Vector;
+import java.sql.*;
 
 /**
  *
@@ -24,6 +22,7 @@ public class Home extends javax.swing.JFrame {
      * Creates new form Home
      */
     public Home() {
+        System.out.println("home");
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -124,7 +123,11 @@ public class Home extends javax.swing.JFrame {
         btNv.setBorder(null);
         btNv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btNvActionPerformed(evt);
+                try {
+                    btNvActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -241,7 +244,11 @@ public class Home extends javax.swing.JFrame {
         btThemNV.setText("Thêm");
         btThemNV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btThemNVActionPerformed(evt);
+                try {
+                    btThemNVActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -261,7 +268,6 @@ public class Home extends javax.swing.JFrame {
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"0026867", "Vũ Công Ngôn", null, null, null, null, "Ngon21", "12345678"},
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null, null},
@@ -315,7 +321,11 @@ public class Home extends javax.swing.JFrame {
         btTimKiemNV.setPreferredSize(new java.awt.Dimension(160, 32));
         btTimKiemNV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTimKiemNVActionPerformed(evt);
+                try {
+                    btTimKiemNVActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -908,8 +918,30 @@ public class Home extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btGiaVeActionPerformed
 
-    private void btThemNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThemNVActionPerformed
+    private void btThemNVActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btThemNVActionPerformed
         // TODO add your handling code here:
+        System.out.println("them nhan vien");
+        String name = txtTenNV.getText();
+        String mnv = txtMaNV.getText();
+        String role = txtVaiTro.getText();
+        String address = txtDiaChi.getText();
+        String dob = txtNamSinh.getText();
+        if(!dob.matches("\\d{4}-\\d{2}-\\d{2}")){
+            JOptionPane.showMessageDialog(null, "dob format yy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        String phone_num = txtSDT.getText();
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        database.connectDb();
+        homeAdmin.insertToEmp(name, address, dob, phone_num, username, password, role);
+//        System.out.println("name: " + name);
+//        System.out.println("mnv: " + mnv);
+//        System.out.println("role: " + role);
+//        System.out.println("address: " + address);
+//        System.out.println("dob: " + dob);
+//        System.out.println("phone: " + phone_num);
+//        System.out.println("username: " + username);
+//        System.out.println("pass: " + password);
     }//GEN-LAST:event_btThemNVActionPerformed
 
     private void btSuaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaNVActionPerformed
@@ -928,7 +960,37 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btCapNhatGiaVeActionPerformed
 
-    private void btNvActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNvActionPerformed
+    private void btNvActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btNvActionPerformed
+        System.out.println("nhan vien");
+        DefaultTableModel tableModel = new DefaultTableModel();
+        String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
+        tableModel.setColumnIdentifiers(colsName);
+        String url = "jdbc:postgresql://localhost:5432/db_do_an";
+        String username = "postgres";
+        String password = "hanhtinhsongsong";
+        Statement st;
+        try {
+            Connection connection = DriverManager.getConnection(url, username, password);
+            st = connection.createStatement();
+            System.out.println("Success connect to db");
+            String sql = "select id, full_name, dob, phone_num, address, user_role, username, user_password from employee order by id asc";
+            ResultSet resultSet = st.executeQuery(sql);
+            while(resultSet.next()) {
+                String row[] = new String[8];
+                row[0] = resultSet.getString(1);
+                row[1] = resultSet.getString(2);
+                row[2] = resultSet.getString(3);
+                row[3] = resultSet.getString(4);
+                row[4] = resultSet.getString(5);
+                row[5] = resultSet.getString(6);
+                row[6] = resultSet.getString(7);
+                row[7] = resultSet.getString(8);
+                tableModel.addRow(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        jTable1.setModel(tableModel);
         switchPanel(Show, plNV);
     }//GEN-LAST:event_btNvActionPerformed
 
@@ -940,8 +1002,65 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btXoaNVActionPerformed
 
-    private void btTimKiemNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimKiemNVActionPerformed
+    private void btTimKiemNVActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTimKiemNVActionPerformed
         // TODO add your handling code here:
+        String search_content = txtTimKiem.getText();
+        int selected = boxLuaChonTimKiem.getSelectedIndex();
+
+
+        System.out.println("tim kiem " + selected + " " + search_content);
+        if(!search_content.equals("")) {
+            if(selected == 0) {
+                database.connectDb();
+                var res = homeAdmin.searchByName(search_content);
+
+                if(res.get("id").equals("")){
+                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác họ và tên nhân viên", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }else {
+                    DefaultTableModel tableModel = new DefaultTableModel();
+                    String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
+                    tableModel.setColumnIdentifiers(colsName);
+                    String row[] = new String[8];
+                    row[0] = res.get("id");
+                    row[1] = res.get("fullname");
+                    row[2] = res.get("dob");
+                    row[3] = res.get("phone_num");
+                    row[4] = res.get("address");
+                    row[5] = res.get("user_role");
+                    row[6] = res.get("username");
+                    row[7] = res.get("password");
+                    tableModel.addRow(row);
+                    jTable1.setModel(tableModel);
+                }
+            }
+
+            if(selected == 1) {
+                database.connectDb();
+                var res = homeAdmin.searchById(search_content);
+
+                if(res.get("id").equals("")){
+                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác họ và tên nhân viên", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }else {
+                    DefaultTableModel tableModel = new DefaultTableModel();
+                    String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
+                    tableModel.setColumnIdentifiers(colsName);
+                    String row[] = new String[8];
+                    row[0] = res.get("id");
+                    row[1] = res.get("fullname");
+                    row[2] = res.get("dob");
+                    row[3] = res.get("phone_num");
+                    row[4] = res.get("address");
+                    row[5] = res.get("user_role");
+                    row[6] = res.get("username");
+                    row[7] = res.get("password");
+                    tableModel.addRow(row);
+                    jTable1.setModel(tableModel);
+                }
+            }
+
+        }else {
+            JOptionPane.showMessageDialog(null ,"Nhập để tìm kiếm", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btTimKiemNVActionPerformed
 
     private void txtGiaVeThangOtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGiaVeThangOtoActionPerformed

@@ -22,7 +22,6 @@ public class HomeForNV extends javax.swing.JFrame {
     public HomeForNV() {
         initComponents();
         setLocationRelativeTo(null);
-        
     }
     
     public void switchPanel(JPanel panel){
@@ -38,7 +37,7 @@ public class HomeForNV extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    public void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         Menu = new javax.swing.JPanel();
@@ -1286,7 +1285,7 @@ public class HomeForNV extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JPanel plThongKe;
+    private  javax.swing.JPanel plThongKe;
     private javax.swing.JPanel plVeThang;
     private javax.swing.JPanel plXeRa;
     private javax.swing.JPanel plXeVao;
