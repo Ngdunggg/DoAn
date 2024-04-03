@@ -4,10 +4,15 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.database;
+import BackEnd.Database.homeNv;
+
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -133,7 +138,6 @@ public class HomeForNV extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(1260, 820));
 
         Menu.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -251,9 +255,62 @@ public class HomeForNV extends javax.swing.JFrame {
         btVao.setFont(new java.awt.Font("Segoe UI", 0, 30)); // NOI18N
         btVao.setForeground(new java.awt.Color(255, 255, 255));
         btVao.setText("Vào");
+
+//        public void showTable(JTable table, JPanel panel) {
+//            DefaultTableModel tableModel = new DefaultTableModel();
+//            String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
+//            tableModel.setColumnIdentifiers(colsName);
+//            String url = "jdbc:postgresql://localhost:5432/db_do_an";
+//            String usernameSql = "postgres";
+//            String passwordSql = "hanhtinhsongsong";
+//            Statement st;
+//            try {
+//                Connection connection = DriverManager.getConnection(url, usernameSql, passwordSql);
+//                st = connection.createStatement();
+//                System.out.println("Success connect to db");
+//                String sql = "select id, full_name, dob, phone_num, address, user_role, username, user_password from employee order by id asc";
+//                ResultSet resultSet = st.executeQuery(sql);
+//                while(resultSet.next()) {
+//                    String row[] = new String[8];
+//                    row[0] = resultSet.getString(1);
+//                    row[1] = resultSet.getString(2);
+//                    row[2] = resultSet.getString(3);
+//                    row[3] = resultSet.getString(4);
+//                    row[4] = resultSet.getString(5);
+//                    row[5] = resultSet.getString(6);
+//                    row[6] = resultSet.getString(7);
+//                    row[7] = resultSet.getString(8);
+//                    tableModel.addRow(row);
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//            table.setModel(tableModel);
+//            switchPanel(Show, panel);
+//        }
         btVao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+
                 btVaoActionPerformed(evt);
+//                String sql = "SELECT * FROM public.ticket" +
+//                        "ORDER BY id ASC ";
+//                try {
+//                    database.connectDb();
+//                    Statement stmt=null ;
+//                    ResultSet rs = stmt.executeQuery(sql);
+//
+//                    ResultSetMetaData metaData = rs.getMetaData();
+//                    int columnCount = metaData.getColumnCount();
+//
+//                    ArrayList<Object[]> data = new ArrayList<>();
+//
+//                    while (rs.next()){
+//
+//                    }
+//                } catch (SQLException e) {
+//                    throw new RuntimeException(e);
+//                }
+
             }
         });
 
@@ -949,11 +1006,12 @@ public class HomeForNV extends javax.swing.JFrame {
                     .addComponent(jLabel28, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                     .addComponent(boxLoaiVeDKVThang, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtBienSoDKVThang, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(boxLoaiXeDKVThang, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(boxLoaiXeDKVThang, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBienSoDKVThang, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel31, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1098,7 +1156,44 @@ public class HomeForNV extends javax.swing.JFrame {
     }//GEN-LAST:event_btThongKe1ActionPerformed
 
     private void btVaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVaoActionPerformed
-        // TODO add your handling code here:
+    String plate = txtBienSo.getText();
+    Integer ticketType =  boxLuaChonLoaiXe.getSelectedIndex()+1;
+    String ticketCode = txtMaThe.getText();
+    Timestamp time = new Timestamp(System.currentTimeMillis());
+    textGioVao.setVisible(false);
+
+    String timeIn = String.valueOf(time);
+    Integer area =  boxLuaChonKhu.getSelectedIndex()+1;
+    if (plate.equals(""))
+    {
+        JOptionPane.showMessageDialog(null,"Thông tin không được để trống!");
+    }
+    if (ticketCode.equals(""))
+    {
+        JOptionPane.showMessageDialog(null,"Thông tin không được để trống!");
+    }
+    if (ticketType.equals(""))
+    {
+        JOptionPane.showMessageDialog(null,"Thông tin không được để trống!");
+    }
+    try {
+        database.connectDb();
+    } catch (SQLException e) {
+            throw new RuntimeException(e);
+    }
+        try {
+            homeNv.insertVehicleInfo(plate);
+            homeNv.insertTicketInfo(ticketCode, Timestamp.valueOf(timeIn),ticketType,area,plate);
+            JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
+            txtBienSo.setText("");
+            txtMaThe.setText("");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
     }//GEN-LAST:event_btVaoActionPerformed
 
     private void textBienSoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBienSoActionPerformed
@@ -1124,7 +1219,8 @@ public class HomeForNV extends javax.swing.JFrame {
     }//GEN-LAST:event_textGioVaoActionPerformed
 
     private void boxLuaChonLoaiVeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxLuaChonLoaiVeActionPerformed
-        // TODO add your handling code here:
+
+//        boxLuaChonLoaiVe.addItem();
     }//GEN-LAST:event_boxLuaChonLoaiVeActionPerformed
 
     private void txtMaTheXRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaTheXRActionPerformed

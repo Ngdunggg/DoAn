@@ -9,7 +9,7 @@ import java.util.Map;
 public class homeAdmin {
     private static Statement st = database.getSt();
     public static Map<String, String> getTicketTypeInfo() {
-        String sql = "SELECT * FROM public.ticket_type " +
+        String sql = "SELECT * FROM public.ticket_type" +
                 "ORDER BY id ASC ";
         try {
             ResultSet resultSet = st.executeQuery((sql));
