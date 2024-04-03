@@ -302,16 +302,16 @@ public class LuotGuiXe extends javax.swing.JFrame {
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
-        new Home().setVisible(true);
+        new Home().showPlThongKe();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
     private void btQuayLai1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLai1ActionPerformed
-       this.dispose();
-       new HomeForNV().setVisible(true);
+        this.dispose();
+        new Home().showPlThongKe();
     }//GEN-LAST:event_btQuayLai1ActionPerformed
 
     /**
-     * @param args the command line arguments
+//     * @param args the command line arguments
      */
     private void updateDate() {
         txtDateCuoi.setDate(Calendar.getInstance().getTime());
