@@ -1,10 +1,13 @@
 package BackEnd.Database;
 
+import javax.swing.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static java.lang.Integer.*;
 
 public class homeAdmin {
     private static Statement st = database.getSt();
@@ -103,6 +106,132 @@ public class homeAdmin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    public static boolean updateEmp(String id, String name, String address, String dob, String phone_num, String username, String password, String role) throws SQLException {
+        String sql = "select id from employee where id ='" + id + "';";
+        String res;
+        try {
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res = resultSet.getString(1);
+            resultSet.close();
+        } catch (SQLException e) {
+            res = "";
+        }
+        if(res.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập đúng mã nhân viên để sửa thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        } else {
+            if(!name.equals("")) {
+                try {
+                    sql = "update employee set full_name = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!address.equals("")) {
+                try {
+                    sql = "update employee set address = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, address);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (!dob.equals("")) {
+                try {
+                    sql = "update employee set dob = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setDate(1, Date.valueOf(dob));
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!phone_num.equals("")) {
+                try {
+                    sql = "update employee set phone_num = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, phone_num);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!username.equals("")) {
+                try {
+                    sql = "update employee set username = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, username);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null ,"Trùng lặp username vui lòng chọn username khác", "Thông báo", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+
+            if(!password.equals("")) {
+                try {
+                    sql = "update employee set user_password = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, password);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!role.equals("")) {
+                try {
+                    sql = "update employee set user_role = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, role);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean deleteEmp(String id) throws SQLException {
+        String sql = "select id from employee where id ='" + id + "';";
+        String res;
+        try {
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res = resultSet.getString(1);
+            resultSet.close();
+        } catch (SQLException e) {
+            res = "";
+        }
+
+        if (res.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác mã nhân viên để xoá", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        } else {
+            sql = "delete from employee where employee.id = ?";
+            PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+            preparedStatement.setInt(1, parseInt(id));
+            preparedStatement.executeUpdate();
+            return true;
+        }
     }
 }

@@ -4,10 +4,11 @@
  */
 package com.mycompany.mytest;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import javax.swing.JLabel;
 import javax.swing.*;
 import java.awt.event.*;
+import java.security.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -24,6 +25,8 @@ public class LuotGuiXe extends javax.swing.JFrame {
      */
     public LuotGuiXe() {
         initComponents();
+        txtDateDau.setDateFormatString("yyyy-MM-dd");
+        txtDateDau.setPreferredSize(new Dimension(150, 30));
         this.setLocationRelativeTo(null);
     }
 
@@ -297,7 +300,11 @@ public class LuotGuiXe extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTraCuuActionPerformed
-        
+        int selectedIndex = boxLuaChonXe.getSelectedIndex();
+        Date date = txtDateDau.getDate();
+        java.sql.Timestamp sqlDate = new java.sql.Timestamp(date.getTime());
+        System.out.print(sqlDate);
+
     }//GEN-LAST:event_btTraCuuActionPerformed
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
