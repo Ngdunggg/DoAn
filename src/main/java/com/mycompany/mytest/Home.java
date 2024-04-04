@@ -26,6 +26,7 @@ public class Home extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         showTable(jTable1, plNV);
+        System.out.print(My.user_in);
     }
     public void switchPanel(JPanel Panel, JPanel panel){
         Panel.removeAll();
@@ -311,7 +312,11 @@ public class Home extends javax.swing.JFrame {
         btSuaNV.setPreferredSize(new java.awt.Dimension(160, 32));
         btSuaNV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btSuaNVActionPerformed(evt);
+                try {
+                    btSuaNVActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -358,7 +363,11 @@ public class Home extends javax.swing.JFrame {
         btXoaNV.setText("Xóa");
         btXoaNV.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btXoaNVActionPerformed(evt);
+                try {
+                    btXoaNVActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -787,11 +796,11 @@ public class Home extends javax.swing.JFrame {
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel8.setText("Thống Kê");
 
-        jPanel2.setBackground(new java.awt.Color(102, 255, 204));
+        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
 
-        btTKLuotGui.setBackground(new java.awt.Color(255, 153, 0));
+        btTKLuotGui.setBackground(new java.awt.Color(255, 255, 255));
         btTKLuotGui.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        btTKLuotGui.setForeground(new java.awt.Color(255, 255, 255));
+        btTKLuotGui.setForeground(new java.awt.Color(0, 0, 0));
         btTKLuotGui.setText("Lượt gửi xe");
         btTKLuotGui.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -816,11 +825,11 @@ public class Home extends javax.swing.JFrame {
                 .addGap(245, 245, 245))
         );
 
-        jPanel3.setBackground(new java.awt.Color(0, 153, 153));
+        jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 
-        btTKLuotDKVeThang.setBackground(new java.awt.Color(255, 153, 0));
+        btTKLuotDKVeThang.setBackground(new java.awt.Color(255, 255, 255));
         btTKLuotDKVeThang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        btTKLuotDKVeThang.setForeground(new java.awt.Color(255, 255, 255));
+        btTKLuotDKVeThang.setForeground(new java.awt.Color(0, 0, 0));
         btTKLuotDKVeThang.setText("Lượt đăng ký vé tháng");
         btTKLuotDKVeThang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -828,9 +837,9 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        btKhuGuiTK.setBackground(new java.awt.Color(255, 153, 0));
+        btKhuGuiTK.setBackground(new java.awt.Color(255, 255, 255));
         btKhuGuiTK.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        btKhuGuiTK.setForeground(new java.awt.Color(255, 255, 255));
+        btKhuGuiTK.setForeground(new java.awt.Color(0, 0, 0));
         btKhuGuiTK.setText("Khu gửi");
         btKhuGuiTK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -973,24 +982,75 @@ public class Home extends javax.swing.JFrame {
         System.out.println("them nhan vien");
         String name = txtTenNV.getText();
         String mnv = txtMaNV.getText();
+
         String role = txtVaiTro.getText();
         String address = txtDiaChi.getText();
         String dob = txtNamSinh.getText();
-        if(!dob.matches("\\d{4}-\\d{2}-\\d{2}")){
-            JOptionPane.showMessageDialog(null, "dob format yy-mm-dd", "Error", JOptionPane.ERROR_MESSAGE);
+
+        String phone_num = txtSDT.getText();
+        String username = txtUsername.getText();
+        String password = txtPassword.getText();
+        if(!name.equals("") && !role.equals("") && !address.equals("") && !dob.equals("") && !phone_num.equals("") && !username.equals("") && !password.equals("")) {
+            if (mnv.equals("")) {
+                if (role.equals("admin") || role.equals("nv")) {
+                    if(dob.matches("\\d{4}-\\d{2}-\\d{2}")){
+                        database.connectDb();
+                        homeAdmin.insertToEmp(name, address, dob, phone_num, username, password, role);
+                        JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        resetTxtNv();
+                        showTable(jTable1, plNV);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập năm sinh theo dạng yyyy-mm-dd (Ví dụ: 2004-09-21)", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }else {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập vai trò là admin nếu là quản lí và nv nếu là nhân viên", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Mã nhân viên được tự động tạo, vui lòng không điền mã nhân viên", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Vui Lòng điền đầy đủ, trừ mã nhân viên", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
+    }//GEN-LAST:event_btThemNVActionPerformed
+
+    private void btSuaNVActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btSuaNVActionPerformed
+        // TODO add your handling code here:
+        String name = txtTenNV.getText();
+        String mnv = txtMaNV.getText();
+
+        String role = txtVaiTro.getText();
+        String address = txtDiaChi.getText();
+        String dob = txtNamSinh.getText();
+        if (!dob.equals("") && !dob.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập năm sinh theo đúng format yyyy-mm-dd (Ví dụ: 2004-09-21)", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            new Home();
+            return;
+        }
+
+        if (!role.equals("")) {
+            if(!role.equals("admin") || !role.equals("nv")) {
+                JOptionPane.showMessageDialog(null ,"Vui lòng nhập vai trò đúng format nv nếu là nhân viên, admin nếu là admin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                new Home();
+                return;
+            }
+        }
+
+
         String phone_num = txtSDT.getText();
         String username = txtUsername.getText();
         String password = txtPassword.getText();
         database.connectDb();
-        homeAdmin.insertToEmp(name, address, dob, phone_num, username, password, role);
-        JOptionPane.showMessageDialog(null, "Thêm nhân viên thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        resetTxtNv();
-        showTable(jTable1, plNV);
-    }//GEN-LAST:event_btThemNVActionPerformed
 
-    private void btSuaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuaNVActionPerformed
-        // TODO add your handling code here:
+        if(mnv.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập mã nhân viên để sửa thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }else {
+            if(homeAdmin.updateEmp(mnv, name, address, dob, phone_num, username, password, role)) {
+                JOptionPane.showMessageDialog(null ,"Cập Nhật Nhân viên thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                resetTxtNv();
+                showTable(jTable1, plNV);
+            }
+        }
     }//GEN-LAST:event_btSuaNVActionPerformed
 
     private void txtGiaVeOtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGiaVeOtoActionPerformed
@@ -1014,8 +1074,19 @@ public class Home extends javax.swing.JFrame {
         switchPanel(Show, plThongKe);
     }//GEN-LAST:event_btThongKeActionPerformed
 
-    private void btXoaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoaNVActionPerformed
+    private void btXoaNVActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btXoaNVActionPerformed
         // TODO add your handling code here:
+        String id = txtMaNV.getText();
+        if(id.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Nhập mã nhân viên để có thể xoá nhân viên", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            database.connectDb();
+            if(homeAdmin.deleteEmp(id)) {
+                JOptionPane.showMessageDialog(null ,"Xoá nhân viên thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                resetTxtNv();
+                showTable(jTable1, plNV);
+            }
+        }
     }//GEN-LAST:event_btXoaNVActionPerformed
 
     private void btTimKiemNVActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTimKiemNVActionPerformed
@@ -1055,7 +1126,7 @@ public class Home extends javax.swing.JFrame {
                 var res = homeAdmin.searchById(search_content);
 
                 if(res.get("id").equals("")){
-                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác họ và tên nhân viên", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác MNV", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 }else {
                     DefaultTableModel tableModel = new DefaultTableModel();
                     String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};

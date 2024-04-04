@@ -29,7 +29,7 @@ public class login {
     }
 
     public static Map<String, String> getLoginInfomation(String username) {
-        String sql = "select username, user_password, user_role from employee " + "where username = '" + username + "'";
+        String sql = "select username, user_password, user_role, id from employee " + "where username = '" + username + "'";
         try {
             ResultSet resultSet = statement.executeQuery(sql);
             Map<String, String> res = new HashMap<>();
@@ -37,6 +37,7 @@ public class login {
                 res.put("username", resultSet.getString(1));
                 res.put("password", resultSet.getString(2));
                 res.put("role", resultSet.getString(3));
+                res.put("id", resultSet.getString(4));
             }
             return res;
 

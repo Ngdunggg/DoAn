@@ -18,6 +18,7 @@ public class My extends javax.swing.JFrame {
 
     
     public My() {
+        user_in = "";
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -203,6 +204,7 @@ public class My extends javax.swing.JFrame {
         username = result.get("username");
         password = result.get("password");
         role = result.get("role");
+        String mnv = result.get("id");
 
         System.out.println(pass.equals(password));
 
@@ -212,6 +214,8 @@ public class My extends javax.swing.JFrame {
         }
         else if ((name.equals(username)) && (pass.equals(password)) && (role.equals("nv"))){
             this.dispose();
+            this.user_in = mnv;
+            System.out.print(user_in);
             new HomeForNV().setVisible(true);
         }
         else{
@@ -247,5 +251,6 @@ public class My extends javax.swing.JFrame {
     private javax.swing.JCheckBox showPass;
     private javax.swing.JLabel user;
     private javax.swing.JTextField userText;
+    public static String user_in;
     // End of variables declaration//GEN-END:variables
 }
