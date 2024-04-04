@@ -34,29 +34,33 @@ public class homeNv {
 
     }
 
-    public static ArrayList<Map<String, String>> getTicketInfo()
+    public static Map<String, String> getTicketInfo()
     {
-        String sql = "SELECT * FROM public.ticket INNER JOIN public.ticket_type ON ticket.ticket_type_id = ticket_type.id" +
-                "ORDER BY public.ticket.id ASC ";
-        ArrayList<Map<String,String>> ticketInfoList = new ArrayList<>();
+        Map<String, String> res = new HashMap<>();
+        String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
+                "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
+                "FROM ticket t " +
+                "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
+                "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
+                "ORDER BY t.id ASC ";
         try{
-            ResultSet resultSet = st.executeQuery((sql));
-            Map<String, String > res = new HashMap<>();
+            ResultSet resultSet = st.executeQuery(sql);
             resultSet.next();
-            res.put("ticket_code",resultSet.getString(1));
-            resultSet.next();
-            res.put("plate", resultSet.getString(6));
-            resultSet.next();
+            res.put("id",resultSet.getString(1));
+            res.put("ticket_type_id",resultSet.getString(2));
             res.put("time_in",resultSet.getString(3));
-            resultSet.next();
-            res.put("ticket_type",resultSet.getString(10));
-            resultSet.next();
-            res.put("area", resultSet.getString(7));
-            ticketInfoList.add(res);
-            return ticketInfoList;
+            res.put("time_out",resultSet.getString(4));
+            res.put("out_date",resultSet.getString(5));
+            res.put("vehicle_id",resultSet.getString(6));
+            res.put("area_id",resultSet.getString(7));
+            res.put("name",resultSet.getString(8));
+            res.put("cost", resultSet.getString(9));
+            res.put("vehicle_name", resultSet.getString(10));
+            return res;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     public static void insertVehicleInfo(String Plate) throws SQLException {
@@ -106,32 +110,12 @@ public class homeNv {
     {
         Map<String, String> res = new HashMap<>();
         try {
-            String sql = "select id, ticket_type_id, time_in, time_out,out_date,vehicle_id, area_id, name, cost from ticket where vehicle_id='"+palte+"';";
-            ResultSet resultSet = st.executeQuery(sql);
-            resultSet.next();
-            res.put("id",resultSet.getString(1));
-            res.put("ticket_type_id",resultSet.getString(2));
-            res.put("time_in",resultSet.getString(3));
-            res.put("time_out",resultSet.getString(4));
-            res.put("out_date",resultSet.getString(5));
-            res.put("vehicle_id",resultSet.getString(6));
-            res.put("area_id",resultSet.getString(7));
-
-            return res;
-
-        }catch (SQLException e)
-        {
-            res.put("vehicle id","");
-            return res;
-        }
-    }
-    public static Map<String,String> searchByTicketId(String ticket_id) throws SQLException
-    {
-        Map<String, String> res = new HashMap<>();
-        try {
-            String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, tt.name AS ticket_type_name, tt.cost " +
+            String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
+                    "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
                     "FROM ticket t " +
-                    "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id where vehicle_id='"+ticket_id+"';";
+                    "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
+                    "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
+                    "WHERE t.id ='"+palte+"';";
             ResultSet resultSet = st.executeQuery(sql);
             resultSet.next();
             res.put("id",resultSet.getString(1));
@@ -143,12 +127,49 @@ public class homeNv {
             res.put("area_id",resultSet.getString(7));
             res.put("name",resultSet.getString(8));
             res.put("cost", resultSet.getString(9));
+            res.put("vehicle_name", resultSet.getString(10));
 
             return res;
 
         }catch (SQLException e)
         {
-            res.put("ticket id","");
+            res.put("vehicle_id","");
+            return res;
+        }
+    }
+    public static Map<String,String> searchByTicketId(String ticket_id) throws SQLException
+    {
+        Map<String, String> res = new HashMap<>();
+        try {
+            String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
+                    "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
+                    "FROM ticket t " +
+                    "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
+                    "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
+                    "WHERE t.id ='"+ticket_id+"';";
+            ResultSet resultSet = st.executeQuery(sql);
+            if (resultSet.next()) {
+                res.put("id", resultSet.getString(1));
+                res.put("ticket_type_id",resultSet.getString(2));
+                res.put("time_in",resultSet.getString(3));
+                res.put("time_out",resultSet.getString(4));
+                res.put("out_date",resultSet.getString(5));
+                res.put("vehicle_id",resultSet.getString(6));
+                res.put("area_id",resultSet.getString(7));
+                res.put("name", resultSet.getString(8));
+                res.put("cost", resultSet.getString(9));
+                res.put("vehicle_name", resultSet.getString(10));
+            } else {
+                // Xử lý khi không có dữ liệu được trả về
+                System.out.print("Khong co du lieu");
+                res.put("id", "");
+            }
+
+            return res;
+
+        }catch (SQLException e)
+        {
+            res.put("id", "");
             return res;
         }
     }

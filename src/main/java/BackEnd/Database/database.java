@@ -12,7 +12,7 @@ public class database {
     private static Statement st;
 
     public static void connectDb() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
+        String url = "jdbc:postgresql://localhost:5432/db-do-an";
         String username = "postgres";
         String password = "Dung0107@";
 
