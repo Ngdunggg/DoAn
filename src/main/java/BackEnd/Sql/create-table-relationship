@@ -14,7 +14,7 @@ CREATE TABLE Ticket (
 	out_date Timestamp,
 	vehicle_id varchar(255) unique,
 	area_id int,
-	emp_id varchar(6) NOT NULL,
+	emp_id serial,
 	PRIMARY KEY (Id)
 );
 
@@ -28,21 +28,20 @@ CREATE Table Ticket_type (
 Create table Vehicle (
 	id varchar(255),
 	parking_area_id int,
+	name varchar(255),
 	primary key(id)
 );
 
 create table Employee (
-	id varchar(6),
-	first_name varchar(255),
-	last_name varchar(255),
+	id SERIAL PRIMARY KEY,
+	full_name varchar(255),
 	dob date,
 	email varchar(255),
 	phone_num varchar(255),
 	address varchar(255),
 	username varchar(255) unique,
 	user_role varchar(6),
-	user_password varchar(255),
-	Primary key (id)
+	user_password varchar(255)
 );
 
 alter table Vehicle

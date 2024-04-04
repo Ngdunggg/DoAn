@@ -27,7 +27,6 @@ public class HomeForNV extends javax.swing.JFrame {
     public HomeForNV() {
         initComponents();
         setLocationRelativeTo(null);
-        
     }
     
     public void switchPanel(JPanel panel){
@@ -43,7 +42,7 @@ public class HomeForNV extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    public void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         Menu = new javax.swing.JPanel();
@@ -256,7 +255,7 @@ public class HomeForNV extends javax.swing.JFrame {
         btVao.setForeground(new java.awt.Color(255, 255, 255));
         btVao.setText("Vào");
 
-//        public void showTable(JTable table, JPanel panel) {
+//        public void showTable (JTable  tableXevao, JPanel jPanel4) {
 //            DefaultTableModel tableModel = new DefaultTableModel();
 //            String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
 //            tableModel.setColumnIdentifiers(colsName);
@@ -711,7 +710,11 @@ public class HomeForNV extends javax.swing.JFrame {
         btTimKiemXR.setText("Tìm kiếm");
         btTimKiemXR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTimKiemXRActionPerformed(evt);
+                try {
+                    btTimKiemXRActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1265,8 +1268,39 @@ public class HomeForNV extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSdtDKVThangActionPerformed
 
-    private void btTimKiemXRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimKiemXRActionPerformed
-        updateDateTime(txtTimKiemXR, textGioRaXR);
+    private void btTimKiemXRActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTimKiemXRActionPerformed
+//        updateDateTime(txtTimKiemXR, textGioRaXR);
+        String search = txtTimKiemXR.getText();
+        Integer op = boxLuaChonTimKiemXR.getSelectedIndex();
+        if(!search.equals(""))
+        {
+            if(op == 0)
+            {
+                database.connectDb();
+                var res = homeNv.searchByTicketId(search);
+                if(res.get("id").equals("")){
+                    JOptionPane.showMessageDialog(null,"Vui lòng nhập lại mã vé");
+                }else{
+                    String ticket_id = res.get("id");
+                    txtMaThe.setText(ticket_id);
+                    String vehicle_id = res.get("vehicle_id");
+                    txtBienSo.setText(vehicle_id);
+                    Timestamp time_in = Timestamp.valueOf(res.get("time_in"));
+                    textGioVao.setText(String.valueOf(time_in));
+                    Timestamp time = new Timestamp(System.currentTimeMillis());
+                    String time_out = String.valueOf(time);
+                    textGioRaXR.setText(time_out);
+                    String ticket_type = res.get("name");
+                    txtLoaiVeXR.setText(ticket_type);
+                    String vehicle_type = res.get("vehicle_id");
+                    txtLoaiXeXR.setText(vehicle_type);
+                    String area_id = res.get("area_id");
+                    txtKhuGuiXR.setText(area_id);
+                    String cost = res.get("cost");
+                    txtTienXR.setText(cost);
+                }
+            }
+        }
     }//GEN-LAST:event_btTimKiemXRActionPerformed
 
     private void btThoatCTrinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThoatCTrinhActionPerformed
@@ -1382,7 +1416,7 @@ public class HomeForNV extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JPanel plThongKe;
+    public   javax.swing.JPanel plThongKe;
     private javax.swing.JPanel plVeThang;
     private javax.swing.JPanel plXeRa;
     private javax.swing.JPanel plXeVao;

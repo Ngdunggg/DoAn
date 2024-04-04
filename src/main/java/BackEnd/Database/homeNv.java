@@ -90,7 +90,7 @@ public class homeNv {
 
     public static void getboxTicketTypeInfo()
     {
-        String sql = "SELECT id FROM ticket";
+        String sql = "SELECT id FROM ticket_type";
         try {
 
             ResultSet resultSet = st.executeQuery((sql));
@@ -101,6 +101,59 @@ public class homeNv {
             throw new RuntimeException(e);
         }
     }
+
+    public static Map<String,String> searchByVehicleId(String palte) throws SQLException
+    {
+        Map<String, String> res = new HashMap<>();
+        try {
+            String sql = "select id, ticket_type_id, time_in, time_out,out_date,vehicle_id, area_id, name, cost from ticket where vehicle_id='"+palte+"';";
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res.put("id",resultSet.getString(1));
+            res.put("ticket_type_id",resultSet.getString(2));
+            res.put("time_in",resultSet.getString(3));
+            res.put("time_out",resultSet.getString(4));
+            res.put("out_date",resultSet.getString(5));
+            res.put("vehicle_id",resultSet.getString(6));
+            res.put("area_id",resultSet.getString(7));
+
+            return res;
+
+        }catch (SQLException e)
+        {
+            res.put("vehicle id","");
+            return res;
+        }
+    }
+    public static Map<String,String> searchByTicketId(String ticket_id) throws SQLException
+    {
+        Map<String, String> res = new HashMap<>();
+        try {
+            String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, tt.name AS ticket_type_name, tt.cost " +
+                    "FROM ticket t " +
+                    "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id where vehicle_id='"+ticket_id+"';";
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res.put("id",resultSet.getString(1));
+            res.put("ticket_type_id",resultSet.getString(2));
+            res.put("time_in",resultSet.getString(3));
+            res.put("time_out",resultSet.getString(4));
+            res.put("out_date",resultSet.getString(5));
+            res.put("vehicle_id",resultSet.getString(6));
+            res.put("area_id",resultSet.getString(7));
+            res.put("name",resultSet.getString(8));
+            res.put("cost", resultSet.getString(9));
+
+            return res;
+
+        }catch (SQLException e)
+        {
+            res.put("ticket id","");
+            return res;
+        }
+    }
+
+
 
 
 

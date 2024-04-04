@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.mytest;
-
 /**
  *
  * @author ASUS
@@ -303,7 +302,7 @@ public class LuotDKVeThang extends javax.swing.JFrame {
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
-        new Home().setVisible(true);
+        new HomeForNV().showPlThongKe();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed

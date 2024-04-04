@@ -12,7 +12,7 @@ public class database {
     private static Statement st;
 
     public static void connectDb() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/db-do-an";
+        String url = "jdbc:postgresql://localhost:5432/db_do_an";
         String username = "postgres";
         String password = "Dung0107@";
 
@@ -22,7 +22,6 @@ public class database {
             homeNv.setConnection(con);
 
             System.out.println("success connect to db");
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
