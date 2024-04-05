@@ -270,7 +270,7 @@ public class homeAdmin {
         return resultSet.getString(1);
     }
 
-    public static int countVehicleIn(String s,  int options) throws SQLException {
+    public static int countVehicleIn(String s,  int options, String name_area) throws SQLException {
         String sql = "select count(vehicle.name)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
@@ -283,9 +283,10 @@ public class homeAdmin {
             updateSql = "ticket.time_out <= '" +  currentTime + "'";
             sql = sql + updateSql;
         } else {
-            updateSql = "where vehicle.name = '" + s + "' and ticket.time_out <= '" + currentTime + "'";
+            updateSql = "where vehicle.name = '" + s + "' and ticket.time_out <= '" + currentTime + "' " + "and parking_area.name = '" + name_area + "'" ;
             sql = sql + updateSql;
         }
+        System.out.println(sql);
         ResultSet resultSet = st.executeQuery(sql);
         resultSet.next();
         if (resultSet.getString(1) == null) {
