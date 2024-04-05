@@ -380,14 +380,16 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
                         "inner join parking_area on ticket.area_id = parking_area.id\n";
                 String updateSql;
                 if(selectedIndex == 0) {
-                    updateSql = "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+                    updateSql = "where (ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month') and (ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "')";
                     sql = sql + updateSql;
                 }
                 if (selectedIndex == 1) {
-                    sql = sql + "where ticket_type.name = 'motorbike_month'";
+                    updateSql = "where ticket_type.name = 'motorbike_month' and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
+                    sql = sql + updateSql;
                 }
                 if (selectedIndex == 2) {
-                    sql = sql + "where ticket_type.name = 'car_month'";
+                    updateSql = "where ticket_type.name = 'car_month' and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
+                    sql = sql + updateSql;
                 }
                 System.out.println(sql);
                 ResultSet resultSet = st.executeQuery(sql);
