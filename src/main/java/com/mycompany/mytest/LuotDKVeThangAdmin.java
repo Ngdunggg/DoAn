@@ -20,12 +20,15 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
     /**
      * Creates new form LuotDKVeThang
      */
-    public LuotDKVeThangAdmin() {
+    public LuotDKVeThangAdmin() throws SQLException {
         initComponents();
         this.setLocationRelativeTo(null);
         txtDateCuoi.setDateFormatString("yyyy-MM-dd");
         txtDateDau.setDateFormatString("yyyy-MM-dd");
         showAll();
+        txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang("Tổng xe", 0));
+        txtTongTien.setText(homeAdmin.sumMoneyMonth("Tổng xe", 0));
+
     }
 
     public void showAll() {
@@ -459,7 +462,11 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LuotDKVeThangAdmin().setVisible(true);
+                try {
+                    new LuotDKVeThangAdmin().setVisible(true);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
