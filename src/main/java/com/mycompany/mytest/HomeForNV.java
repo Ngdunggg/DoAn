@@ -4,10 +4,10 @@
  */
 package com.mycompany.mytest;
 
+import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 
 /**
@@ -1176,6 +1176,8 @@ public class HomeForNV extends javax.swing.JFrame {
     private void btTimKiemXRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTimKiemXRActionPerformed
         updateDateTime(txtTimKiemXR, textGioRaXR);
     }//GEN-LAST:event_btTimKiemXRActionPerformed
+
+
 
     private void btThoatCTrinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btThoatCTrinhActionPerformed
         System.exit(0);

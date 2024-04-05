@@ -1,10 +1,14 @@
 package BackEnd.Database;
 
+import javax.swing.*;
 import java.sql.*;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static java.lang.Integer.*;
 
 public class homeAdmin {
     private static Statement st = database.getSt();
@@ -103,6 +107,235 @@ public class homeAdmin {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    public static boolean updateEmp(String id, String name, String address, String dob, String phone_num, String username, String password, String role) throws SQLException {
+        String sql = "select id from employee where id ='" + id + "';";
+        String res;
+        try {
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res = resultSet.getString(1);
+            resultSet.close();
+        } catch (SQLException e) {
+            res = "";
+        }
+        if(res.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập đúng mã nhân viên để sửa thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        } else {
+            if(!name.equals("")) {
+                try {
+                    sql = "update employee set full_name = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!address.equals("")) {
+                try {
+                    sql = "update employee set address = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, address);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (!dob.equals("")) {
+                try {
+                    sql = "update employee set dob = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setDate(1, Date.valueOf(dob));
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!phone_num.equals("")) {
+                try {
+                    sql = "update employee set phone_num = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, phone_num);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!username.equals("")) {
+                try {
+                    sql = "update employee set username = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, username);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null ,"Trùng lặp username vui lòng chọn username khác", "Thông báo", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+
+            if(!password.equals("")) {
+                try {
+                    sql = "update employee set user_password = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, password);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(!role.equals("")) {
+                try {
+                    sql = "update employee set user_role = ? where employee.id = ?";
+                    PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+                    preparedStatement.setString(1, role);
+                    preparedStatement.setInt(2, Integer.parseInt(id));
+                    preparedStatement.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean deleteEmp(String id) throws SQLException {
+        String sql = "select id from employee where id ='" + id + "';";
+        String res;
+        try {
+            ResultSet resultSet = st.executeQuery(sql);
+            resultSet.next();
+            res = resultSet.getString(1);
+            resultSet.close();
+        } catch (SQLException e) {
+            res = "";
+        }
+
+        if (res.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập chính xác mã nhân viên để xoá", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        } else {
+            sql = "delete from employee where employee.id = ?";
+            PreparedStatement preparedStatement = st.getConnection().prepareStatement(sql);
+            preparedStatement.setInt(1, parseInt(id));
+            preparedStatement.executeUpdate();
+            return true;
+        }
+    }
+
+    public static String sumMoney(String s, int option) throws SQLException {
+        String sql = "select sum(ticket_type.cost)\n" +
+                "from ticket\n" +
+                "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                "inner join parking_area on ticket.area_id = parking_area.id\n";
+        String sqlUpdate = "where vehicle.name = '" + s + "'";
+        if (option != 0) {
+            sql = sql + sqlUpdate;
+        }
+        ResultSet resultSet = st.executeQuery(sql);
+        System.out.print(sql);
+        resultSet.next();
+        if(resultSet.getString(1) == null){
+            return "0";
+        }
+        return resultSet.getString(1);
+    }
+
+    public static String sumLuotGui(String s, int options) throws SQLException {
+        String sql = "select count(vehicle.name)\n" +
+                "from ticket\n" +
+                "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                "inner join parking_area on ticket.area_id = parking_area.id\n";
+        String sqlUpdate = "where vehicle.name = '" + s + "'";
+        if(options != 0) {
+            sql = sql + sqlUpdate;
+        }
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        return resultSet.getString(1);
+    }
+
+    public static int countVehicleIn(String s,  int options) throws SQLException {
+        String sql = "select count(vehicle.name)\n" +
+                "from ticket\n" +
+                "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                "inner join parking_area on ticket.area_id = parking_area.id\n";
+        String updateSql;
+        String currentTime = java.sql.Timestamp.from(Instant.now()).toString();
+        System.out.println(currentTime);
+        if(options == 0) {
+            updateSql = "ticket.time_out <= '" +  currentTime + "'";
+            sql = sql + updateSql;
+        } else {
+            updateSql = "where vehicle.name = '" + s + "' and ticket.time_out <= '" + currentTime + "'";
+            sql = sql + updateSql;
+        }
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        if (resultSet.getString(1) == null) {
+            return 0;
+        }
+        return  resultSet.getInt(1);
+    }
+
+    public static String countLuotGuiThang(String s, int options) throws SQLException {
+        String sql = "select count(vehicle.name)\n" +
+                "from ticket\n" +
+                "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                "inner join parking_area on ticket.area_id = parking_area.id\n";
+        if(options == 0) {
+            sql = sql + "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+        }
+        if (options == 1) {
+            sql = sql + "where ticket_type.name = 'motorbike_month'";
+        }
+        if (options == 2) {
+            sql = sql + "where ticket_type.name = 'car_month'";
+        }
+        System.out.println(sql);
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        return resultSet.getString(1);
+    }
+
+    public static String sumMoneyMonth(String s, int options) throws SQLException {
+        String sql = "select sum(ticket_type.cost)\n" +
+                "from ticket\n" +
+                "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                "inner join parking_area on ticket.area_id = parking_area.id\n";
+        if(options == 0) {
+            sql = sql + "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+        }
+        if (options == 1) {
+            sql = sql + "where ticket_type.name = 'motorbike_month'";
+        }
+        if (options == 2) {
+            sql = sql + "where ticket_type.name = 'car_month'";
+        }
+        ResultSet resultSet = st.executeQuery(sql);
+        System.out.print(sql);
+        resultSet.next();
+        if(resultSet.getString(1) == null){
+            return "0";
+        }
+        return resultSet.getString(1);
     }
 }
