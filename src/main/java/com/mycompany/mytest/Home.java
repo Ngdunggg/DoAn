@@ -803,7 +803,11 @@ public class Home extends javax.swing.JFrame {
         btTKLuotGui.setText("Lượt gửi xe");
         btTKLuotGui.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTKLuotGuiActionPerformed(evt);
+                try {
+                    btTKLuotGuiActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -832,7 +836,11 @@ public class Home extends javax.swing.JFrame {
         btTKLuotDKVeThang.setText("Lượt đăng ký vé tháng");
         btTKLuotDKVeThang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTKLuotDKVeThangActionPerformed(evt);
+                try {
+                    btTKLuotDKVeThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1169,12 +1177,12 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordActionPerformed
 
-    private void btTKLuotGuiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotGuiActionPerformed
+    private void btTKLuotGuiActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTKLuotGuiActionPerformed
         this.dispose();
         new LuotGuiXe().setVisible(true);
     }//GEN-LAST:event_btTKLuotGuiActionPerformed
 
-    private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
+    private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
        this.dispose();
        new LuotDKVeThangAdmin().setVisible(true);
     }//GEN-LAST:event_btTKLuotDKVeThangActionPerformed
@@ -1203,14 +1211,15 @@ public class Home extends javax.swing.JFrame {
             ResultSet resultSet = st.executeQuery(sql);
             while ((resultSet.next())) {
                 String row[] = new String[5];
+                String name_area = resultSet.getString(1);
                 row[0] = resultSet.getString(1);
                 int motor_lot = resultSet.getInt(2);
                 row[1] = String.valueOf(motor_lot);
                 int car_lot = resultSet.getInt(3);
                 row[2] = String.valueOf(car_lot);
-                int motor_empty = motor_lot - homeAdmin.countVehicleIn("Xe máy", 1);
+                int motor_empty = motor_lot - homeAdmin.countVehicleIn("xe máy", 1, name_area);
                 row[3] = String.valueOf(motor_empty);
-                int car_empty = car_lot - homeAdmin.countVehicleIn("Ô tô", 1);
+                int car_empty = car_lot - homeAdmin.countVehicleIn("ô tô", 1, name_area);
                 row[4] = String.valueOf(car_empty);
                 tableModel.addRow(row);
             }

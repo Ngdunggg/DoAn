@@ -29,7 +29,7 @@ public class LuotGuiXe extends JFrame {
     /**
      * Creates new form LuotGuiXe
      */
-    public LuotGuiXe() {
+    public LuotGuiXe() throws SQLException {
         initComponents();
         txtDateDau.setDateFormatString("yyyy-MM-dd");
         txtDateDau.setPreferredSize(new Dimension(150, 30));
@@ -37,6 +37,8 @@ public class LuotGuiXe extends JFrame {
         txtDateCuoi.setPreferredSize(new Dimension(150, 30));
         this.setLocationRelativeTo(null);
         showAll();
+        txtTongTien.setText(homeAdmin.sumMoney("Tổng xe", 0));
+        txtTongLuotGui.setText(homeAdmin.sumLuotGui("Tổng xe", 0));
     }
 
     public void TraCuuTongXe(Timestamp frist, Timestamp last, int option) {
@@ -63,14 +65,14 @@ public class LuotGuiXe extends JFrame {
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                         "inner join parking_area on ticket.area_id = parking_area.id\n" +
-                        "where time_in >= '2024-04-02 00:00:00.0' and time_in <='2024-04-06 15:30:39.497' and vehicle.name = 'Xe máy'";
+                        "where time_in >= '" + frist + "' and time_in <='" + last + "' and vehicle.name = 'xe máy'";
             } else if (option == 2) {
                 sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
                         "from ticket\n" +
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                         "inner join parking_area on ticket.area_id = parking_area.id\n" +
-                        "where time_in >= '2024-04-02 00:00:00.0' and time_in <='2024-04-06 15:30:39.497' and vehicle.name = 'Ô tô'";
+                        "where time_in >= '" + frist + "' and time_in <='" + last + "' and vehicle.name = 'ô tô'";
             }
             System.out.println(sql);
             ResultSet resultSet = st.executeQuery(sql);
@@ -182,7 +184,7 @@ public class LuotGuiXe extends JFrame {
             }
         });
 
-        boxLuaChonXe.setModel(new DefaultComboBoxModel<>(new String[] { "Tổng xe", "Xe máy", "Ô tô" }));
+        boxLuaChonXe.setModel(new DefaultComboBoxModel<>(new String[] { "Tổng xe", "xe máy", "ô tô" }));
 
         jLabel1.setFont(new Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("Từ ngày:");
@@ -482,7 +484,11 @@ public class LuotGuiXe extends JFrame {
         /* Create and display the form */
         EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LuotGuiXe().setVisible(true);
+                try {
+                    new LuotGuiXe().setVisible(true);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
