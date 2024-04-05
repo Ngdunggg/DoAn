@@ -297,7 +297,7 @@ public class LuotDKVeThang extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTraCuuActionPerformed
-    
+
     }//GEN-LAST:event_btTraCuuActionPerformed
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed

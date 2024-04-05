@@ -3,6 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package com.mycompany.mytest;
+import BackEnd.Database.database;
+import BackEnd.Database.homeAdmin;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.Date;
+
 /**
  *
  * @author ASUS
@@ -15,6 +23,48 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
     public LuotDKVeThangAdmin() {
         initComponents();
         this.setLocationRelativeTo(null);
+        txtDateCuoi.setDateFormatString("yyyy-MM-dd");
+        txtDateDau.setDateFormatString("yyyy-MM-dd");
+        showAll();
+    }
+
+    public void showAll() {
+        String url = "jdbc:postgresql://localhost:5432/db_do_an";
+        String username = "postgres";
+        String password = "hanhtinhsongsong";
+        DefaultTableModel tableModel = new DefaultTableModel();
+        String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
+        tableModel.setColumnIdentifiers(colsName);
+
+        try {
+            Connection con = DriverManager.getConnection(url, username, password);
+            Statement st = con.createStatement();
+            System.out.println("success connect to db");
+            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                    "from ticket\n" +
+                    "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                    "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                    "inner join parking_area on ticket.area_id = parking_area.id\n" +
+                    "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+            System.out.println(sql);
+            ResultSet resultSet = st.executeQuery(sql);
+            while ((resultSet.next())) {
+                String row[] = new String[8];
+                row[0] = resultSet.getString(1);
+                row[1] = resultSet.getString(2);
+                row[2] = resultSet.getString(3);
+                row[3] = resultSet.getString(4);
+                row[4] = resultSet.getString(5);
+                row[5] = resultSet.getString(6);
+                row[6] = resultSet.getString(7);
+                row[7] = resultSet.getString(8);
+                tableModel.addRow(row);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        jTable1.setModel(tableModel);
     }
 
     /**
@@ -297,16 +347,81 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btTraCuuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTraCuuActionPerformed
+        int selectedIndex = boxLuaChonXe.getSelectedIndex();
+        String selectedItem = (String) boxLuaChonXe.getSelectedItem();
+        Timestamp sqlDate = null;
+        Timestamp sqlDateLast = null;
 
+        Date date = txtDateDau.getDate();
+        Date date_last = txtDateCuoi.getDate();
+        if (date == null || date_last == null) {
+            JOptionPane.showMessageDialog(null, "Điền đủ ngày bắt đầu và kết thúc để tra cứu", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            sqlDate = new Timestamp(date.getTime());
+            sqlDateLast = new Timestamp(date_last.getTime());
+            String url = "jdbc:postgresql://localhost:5432/db_do_an";
+            String username = "postgres";
+            String password = "hanhtinhsongsong";
+            DefaultTableModel tableModel = new DefaultTableModel();
+            String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
+            tableModel.setColumnIdentifiers(colsName);
+
+            try {
+                Connection con = DriverManager.getConnection(url, username, password);
+                Statement st = con.createStatement();
+                System.out.println("success connect to db");
+                String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                        "from ticket\n" +
+                        "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                        "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                        "inner join parking_area on ticket.area_id = parking_area.id\n";
+                String updateSql;
+                if(selectedIndex == 0) {
+                    updateSql = "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+                    sql = sql + updateSql;
+                }
+                if (selectedIndex == 1) {
+                    sql = sql + "where ticket_type.name = 'motorbike_month'";
+                }
+                if (selectedIndex == 2) {
+                    sql = sql + "where ticket_type.name = 'car_month'";
+                }
+                System.out.println(sql);
+                ResultSet resultSet = st.executeQuery(sql);
+                while ((resultSet.next())) {
+                    String row[] = new String[8];
+                    row[0] = resultSet.getString(1);
+                    row[1] = resultSet.getString(2);
+                    row[2] = resultSet.getString(3);
+                    row[3] = resultSet.getString(4);
+                    row[4] = resultSet.getString(5);
+                    row[5] = resultSet.getString(6);
+                    row[6] = resultSet.getString(7);
+                    row[7] = resultSet.getString(8);
+                    tableModel.addRow(row);
+                }
+                jTable1.setModel(tableModel);
+                database.connectDb();
+                txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang(selectedItem, selectedIndex));
+                txtTongTien.setText(homeAdmin.sumMoneyMonth(selectedItem, selectedIndex));
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        System.out.println(selectedIndex + " " + selectedItem + " " + sqlDateLast + " " + sqlDate);
     }//GEN-LAST:event_btTraCuuActionPerformed
 
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
+        System.out.println("Tro lai");
         new Home().showPlThongKe();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
     private void btLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btLamMoiActionPerformed
         // TODO add your handling code here:
+        showAll();
     }//GEN-LAST:event_btLamMoiActionPerformed
 
     private void btQuayLai1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLai1ActionPerformed
@@ -344,7 +459,7 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LuotDKVeThang().setVisible(true);
+                new LuotDKVeThangAdmin().setVisible(true);
             }
         });
     }
