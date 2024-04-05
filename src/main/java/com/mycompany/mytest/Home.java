@@ -803,7 +803,11 @@ public class Home extends javax.swing.JFrame {
         btTKLuotGui.setText("Lượt gửi xe");
         btTKLuotGui.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTKLuotGuiActionPerformed(evt);
+                try {
+                    btTKLuotGuiActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -832,7 +836,11 @@ public class Home extends javax.swing.JFrame {
         btTKLuotDKVeThang.setText("Lượt đăng ký vé tháng");
         btTKLuotDKVeThang.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btTKLuotDKVeThangActionPerformed(evt);
+                try {
+                    btTKLuotDKVeThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -1169,12 +1177,12 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordActionPerformed
 
-    private void btTKLuotGuiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotGuiActionPerformed
+    private void btTKLuotGuiActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTKLuotGuiActionPerformed
         this.dispose();
         new LuotGuiXe().setVisible(true);
     }//GEN-LAST:event_btTKLuotGuiActionPerformed
 
-    private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
+    private void btTKLuotDKVeThangActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
        this.dispose();
        new LuotDKVeThangAdmin().setVisible(true);
     }//GEN-LAST:event_btTKLuotDKVeThangActionPerformed
