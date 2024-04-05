@@ -1035,6 +1035,8 @@ public class Home extends javax.swing.JFrame {
                 return;
             }
         }
+
+
         String phone_num = txtSDT.getText();
         String username = txtUsername.getText();
         String password = txtPassword.getText();
