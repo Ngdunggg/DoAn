@@ -236,15 +236,30 @@ public class homeAdmin {
         }
     }
 
-    public static String sumMoney(String s, int option) throws SQLException {
+    public static String sumMoney(String s, int option, Timestamp frist, Timestamp last) throws SQLException {
         String sql = "select sum(ticket_type.cost)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                 "inner join parking_area on ticket.area_id = parking_area.id\n";
-        String sqlUpdate = "where vehicle.name = '" + s + "'";
+        String sqlUpdate = "and (vehicle.name = '" + s + "')";
         if (option != 0) {
-            sql = sql + sqlUpdate;
+            sql = sql + "where (time_in >= '" + frist + "' and time_in <='" + last + "') " + sqlUpdate;
+        }
+        if (option == 0 && frist == null && last==null) {
+            sql = "select sum(ticket_type.cost)\n" +
+            "from ticket\n" +
+            "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+            "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+            "inner join parking_area on ticket.area_id = parking_area.id\n";
+        }
+        if (option == 0 && frist != null && last!=null) {
+            sql = "select sum(ticket_type.cost)\n" +
+                    "from ticket\n" +
+                    "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                    "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                    "inner join parking_area on ticket.area_id = parking_area.id\n" +
+                    "where (time_in >= '" + frist + "' and time_in <='" + last + "') ";
         }
         ResultSet resultSet = st.executeQuery(sql);
         System.out.print(sql);
@@ -255,15 +270,30 @@ public class homeAdmin {
         return resultSet.getString(1);
     }
 
-    public static String sumLuotGui(String s, int options) throws SQLException {
-        String sql = "select count(vehicle.name)\n" +
+    public static String sumLuotGui(String s, int option, Timestamp frist, Timestamp last) throws SQLException {
+        String sql = "select sum(ticket_type.cost)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                 "inner join parking_area on ticket.area_id = parking_area.id\n";
-        String sqlUpdate = "where vehicle.name = '" + s + "'";
-        if(options != 0) {
-            sql = sql + sqlUpdate;
+        String sqlUpdate = "and (vehicle.name = '" + s + "')";
+        if (option != 0) {
+            sql = sql + "where (time_in >= '" + frist + "' and time_in <='" + last + "') " + sqlUpdate;
+        }
+        if (option == 0 && frist == null && last==null) {
+            sql = "select sum(ticket_type.cost)\n" +
+                    "from ticket\n" +
+                    "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                    "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                    "inner join parking_area on ticket.area_id = parking_area.id\n";
+        }
+        if (option == 0 && frist != null && last!=null) {
+            sql = "select sum(ticket_type.cost)\n" +
+                    "from ticket\n" +
+                    "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
+                    "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
+                    "inner join parking_area on ticket.area_id = parking_area.id\n" +
+                    "where (time_in >= '" + frist + "' and time_in <='" + last + "') ";
         }
         ResultSet resultSet = st.executeQuery(sql);
         resultSet.next();
@@ -295,20 +325,21 @@ public class homeAdmin {
         return  resultSet.getInt(1);
     }
 
-    public static String countLuotGuiThang(String s, int options) throws SQLException {
+    public static String countLuotGuiThang(String s, int options, Timestamp sqlDate, Timestamp sqlDateLast) throws SQLException {
         String sql = "select count(vehicle.name)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                 "inner join parking_area on ticket.area_id = parking_area.id\n";
+        if (options == -1)  sql = sql + "where (ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month')";
         if(options == 0) {
-            sql = sql + "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+            sql = sql + "where (ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month')" + " and (ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "')";
         }
         if (options == 1) {
-            sql = sql + "where ticket_type.name = 'motorbike_month'";
+            sql = sql + "where ticket_type.name = 'motorbike_month'" + " and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
         }
         if (options == 2) {
-            sql = sql + "where ticket_type.name = 'car_month'";
+            sql = sql + "where ticket_type.name = 'car_month'" + " and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
         }
         System.out.println(sql);
         ResultSet resultSet = st.executeQuery(sql);
@@ -316,20 +347,21 @@ public class homeAdmin {
         return resultSet.getString(1);
     }
 
-    public static String sumMoneyMonth(String s, int options) throws SQLException {
+    public static String sumMoneyMonth(String s, int options, Timestamp sqlDate, Timestamp sqlDateLast) throws SQLException {
         String sql = "select sum(ticket_type.cost)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                 "inner join parking_area on ticket.area_id = parking_area.id\n";
+        if (options == -1)  sql = sql + "where (ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month')";
         if(options == 0) {
-            sql = sql + "where ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month'";
+            sql = sql + "where (ticket_type.name = 'motorbike_month' or ticket_type.name = 'car_month')" + " and (ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "')";
         }
         if (options == 1) {
-            sql = sql + "where ticket_type.name = 'motorbike_month'";
+            sql = sql + "where ticket_type.name = 'motorbike_month'" + " and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
         }
         if (options == 2) {
-            sql = sql + "where ticket_type.name = 'car_month'";
+            sql = sql + "where ticket_type.name = 'car_month'" + " and ticket.time_in >='" + sqlDate + "' and ticket.time_in <='" + sqlDateLast + "'";
         }
         ResultSet resultSet = st.executeQuery(sql);
         System.out.print(sql);

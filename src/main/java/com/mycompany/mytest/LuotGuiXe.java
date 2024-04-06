@@ -37,8 +37,8 @@ public class LuotGuiXe extends JFrame {
         txtDateCuoi.setPreferredSize(new Dimension(150, 30));
         this.setLocationRelativeTo(null);
         showAll();
-        txtTongTien.setText(homeAdmin.sumMoney("Tổng xe", 0));
-        txtTongLuotGui.setText(homeAdmin.sumLuotGui("Tổng xe", 0));
+        txtTongTien.setText(homeAdmin.sumMoney("Tổng xe", 0, null, null));
+        txtTongLuotGui.setText(homeAdmin.sumLuotGui("Tổng xe", 0, null, null));
     }
 
     public void TraCuuTongXe(Timestamp frist, Timestamp last, int option) {
@@ -429,8 +429,8 @@ public class LuotGuiXe extends JFrame {
                 TraCuuTongXe(sqlDate, sqlDateLast, selectedIndex);
                 database.connectDb();
 
-                txtTongTien.setText(homeAdmin.sumMoney(selectedItem, selectedIndex));
-                txtTongLuotGui.setText(homeAdmin.sumLuotGui(selectedItem, selectedIndex));
+                txtTongTien.setText(homeAdmin.sumMoney(selectedItem, selectedIndex, sqlDate, sqlDateLast));
+                txtTongLuotGui.setText(homeAdmin.sumLuotGui(selectedItem, selectedIndex, sqlDate, sqlDateLast));
 
 
             } else {

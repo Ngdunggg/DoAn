@@ -26,8 +26,8 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
         txtDateCuoi.setDateFormatString("yyyy-MM-dd");
         txtDateDau.setDateFormatString("yyyy-MM-dd");
         showAll();
-        txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang("Tổng xe", 0));
-        txtTongTien.setText(homeAdmin.sumMoneyMonth("Tổng xe", 0));
+        txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang("Tổng xe", -1, null, null));
+        txtTongTien.setText(homeAdmin.sumMoneyMonth("Tổng xe", -1, null, null));
 
     }
 
@@ -407,8 +407,9 @@ public class LuotDKVeThangAdmin extends javax.swing.JFrame {
                 }
                 jTable1.setModel(tableModel);
                 database.connectDb();
-                txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang(selectedItem, selectedIndex));
-                txtTongTien.setText(homeAdmin.sumMoneyMonth(selectedItem, selectedIndex));
+                txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang(selectedItem, selectedIndex, sqlDate, sqlDateLast));
+
+                txtTongTien.setText(homeAdmin.sumMoneyMonth(selectedItem, selectedIndex, sqlDate, sqlDateLast));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
