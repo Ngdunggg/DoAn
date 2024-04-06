@@ -1,4 +1,5 @@
 package BackEnd.Database;
+import javax.swing.*;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,10 +11,12 @@ import java.util.Map;
 public class homeNv {
     private static Statement st = database.getSt();
     private static Connection con;
-    private static PreparedStatement pst;
+    private static Character sda;
+//    private static PreparedStatement pst;
     public static void setConnection(Connection connection)
     {
         con=connection;
+
     }
 
     //Xe vao
@@ -68,8 +71,7 @@ public class homeNv {
 
     public static void insertVehicleInfo(String Plate, String name) throws SQLException {
 
-        String sql = "INSERT INTO public.vehicle(id, name) VALUES (?,?)";
-        pst = con.prepareStatement(sql);
+       PreparedStatement pst = con.prepareStatement("INSERT INTO public.vehicle(id, name) VALUES (?,?)");
         pst.setString(1,Plate);
         pst.setString(2,name);
         // Thực thi câu lệnh SQL.
@@ -81,7 +83,7 @@ public class homeNv {
 //        System.out.println(sql); // In câu lệnh SQL để kiểm tra xem có đúng không
 
         try {
-            pst = con.prepareStatement("INSERT INTO public.ticket (id, time_in, area_id, ticket_type_id,vehicle_id) VALUES (?, ?, ?, ?,?)") ;
+            PreparedStatement pst = con.prepareStatement("INSERT INTO public.ticket (id, time_in, area_id, ticket_type_id,vehicle_id) VALUES (?, ?, ?, ?,?)") ;
             pst.setString(1, ticketCode);
             pst.setTimestamp(2, timeIn);
             pst.setInt(3, area);
@@ -185,7 +187,7 @@ public class homeNv {
     public void insertVehicleType(int vehicleType) throws SQLException
     {
         try {
-            pst = con.prepareStatement("insert into vehicle(name) values(?)");
+            PreparedStatement pst = con.prepareStatement("insert into vehicle(name) values(?)");
             pst.setInt(1,vehicleType);
 
             pst.executeUpdate();
@@ -199,7 +201,7 @@ public class homeNv {
     public static boolean isTicketIdExists( String id) throws SQLException {
 
         try  {
-            pst = con.prepareStatement("SELECT COUNT(*) FROM ticket WHERE id = ?");
+          PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM ticket WHERE id = ?");
             pst.setString(1, id);
             ResultSet rs = pst.executeQuery();
             rs.next();
@@ -213,7 +215,7 @@ public class homeNv {
     public  static void insertTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType,  int areaId) throws  SQLException
     {
         try {
-            pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id) values (?,?,?,?,?,?)");
+            PreparedStatement pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id) values (?,?,?,?,?,?)");
             pst.setString(1, ticketId);
             pst.setString(2, vehicleId);
             pst.setString(3, cusName);
@@ -242,6 +244,106 @@ public class homeNv {
         }
         return res;
     }
+
+    public static boolean updateTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType, String vehicleName, int areaId) throws SQLException {
+        String sql = "SELECT id FROM ticket WHERE id = ?";
+        String res = "";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, ticketId);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                res = resultSet.getString(1);
+            }
+            resultSet.close();
+            // Không đóng PreparedStatement ở đây để sử dụng lại
+        } catch (SQLException e) {
+            // Xử lý ngoại lệ
+            e.printStackTrace();
+        }
+
+        if (res.equals("")) {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng mã thẻ");
+            return false;
+        } else {
+
+            try {
+                if (!cusName.equals("")) {
+
+                    PreparedStatement pstUpdate = con.prepareStatement("UPDATE ticket SET cus_name = ? WHERE id = ?");
+                    pstUpdate.setString(1, cusName);
+                    pstUpdate.setString(2,ticketId);
+                    pstUpdate.executeUpdate();
+                }
+
+                if (!cusPhone.equals("")) {
+
+                    PreparedStatement pstUpdate = con.prepareStatement("UPDATE ticket SET cus_phone = ? WHERE id = ?");
+                    pstUpdate.setString(1, cusPhone);
+                    pstUpdate.setString(2, ticketId);
+                    pstUpdate.executeUpdate();
+                }
+
+                if (ticketType != 0) {
+
+                    PreparedStatement pstUpdate = con.prepareStatement("UPDATE ticket SET ticket_type_id = ? WHERE id = ?");
+                    pstUpdate.setInt(1, ticketType);
+                    pstUpdate.setString(2, ticketId);
+                    pstUpdate.executeUpdate();
+                }
+
+                if (!vehicleName.equals("")) {
+
+                    PreparedStatement pstUpdate = con.prepareStatement("UPDATE vehicle SET name = ? WHERE id = (SELECT vehicle_id FROM ticket WHERE id = ?)");
+                    pstUpdate.setString(1, vehicleName);
+                    pstUpdate.setString(2, ticketId);
+                    pstUpdate.executeUpdate();
+                }
+
+                if (areaId != 0) {
+                    sql = "UPDATE ticket SET area_id = ? WHERE id = ?";
+                    PreparedStatement pstUpdate = con.prepareStatement("UPDATE ticket SET area_id = ? WHERE id = ?");
+                    pstUpdate.setInt(1, areaId);
+                    pstUpdate.setString(2, ticketId);
+                    pstUpdate.executeUpdate();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return true;
+    }
+    public static  boolean deleteTicket(String ticketId) throws  SQLException{
+         String res = "";
+
+        try{
+            PreparedStatement pst = con.prepareStatement("select id from ticket where id=? and (ticket_type_id = 2 or ticket_type_id = 4)");
+            pst.setString(1,ticketId);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                res = resultSet.getString(1);
+            }
+            resultSet.close();
+
+        }catch (SQLException e) {
+           throw  new RuntimeException(e);
+        }
+        if (res.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng mã vé","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }else{
+            PreparedStatement pstDelete = con.prepareStatement("delete from ticket where id =? ");
+            pstDelete.setString(1,ticketId);
+            pstDelete.executeUpdate();
+            return true;
+        }
+    }
+
+
+
+
 
 
 }

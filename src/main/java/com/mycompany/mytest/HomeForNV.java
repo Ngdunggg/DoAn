@@ -1265,10 +1265,91 @@ public class HomeForNV extends javax.swing.JFrame {
         btSuaDKVThang.setForeground(new java.awt.Color(255, 255, 255));
         btSuaDKVThang.setText("Sửa");
 
+        btSuaDKVThang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btSuaDKVThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void btSuaDKVThangActionPerformed(ActionEvent evt) throws SQLException {
+                String ticketId = txtMaTheDKVThang.getText();
+                String vehicleId = txtBienSoDKVThang.getText();
+                String cusName = txtTenKhachHang.getText();
+                String cusPhone = txtSdtDKVThang.getText();
+                int ticketType = boxLoaiVeDKVThang.getSelectedIndex();
+                int vehicleType = boxLoaiXeDKVThang.getSelectedIndex();
+                String vehicleName = (String)boxLoaiXeDKVThang.getSelectedItem();
+                int areaId = boxKhuGuiDKVThang.getSelectedIndex()+1;
+                if(vehicleId.equals("") && vehicleType == ticketType ){
+                database.connectDb();
+                if(homeNv.updateTicketMonth(ticketId,vehicleId,cusName,cusPhone,ticketType,vehicleName,areaId)){
+                    JOptionPane.showMessageDialog(null,"Cập nhật thông tin thành công!","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+                    resetTicket();
+                    showTableTicket();
+                    String ticketIdTemp= generateRandomID();
+                    String ticketCode =ticketCodetmp ;
+                    if(ticketCode.equals(ticketCodetmp))
+                    {
+                        do {
+                            database.connectDb();
+                            ticketCode= ticketIdTemp;
+                        }while (homeNv.isTicketIdExists(ticketCode));
+                        txtMaTheDKVThang.setText(ticketCode);
+                    }
+                    txtMaTheDKVThang.setText(ticketIdTemp);
+                }}else{
+                    if(!vehicleId.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng để trống biển số xe vì thông tin này tương ứng với 1 mã vé duy nhất", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    if (vehicleType != ticketType){
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn đúng thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        });
+
         btXoaDKVThang.setBackground(new java.awt.Color(102, 102, 102));
         btXoaDKVThang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btXoaDKVThang.setForeground(new java.awt.Color(255, 255, 255));
         btXoaDKVThang.setText("Xóa");
+        btXoaDKVThang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    btXoaDKVThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void btXoaDKVThangActionPerformed(ActionEvent evt) throws SQLException {
+                String ticketId = txtMaTheDKVThang.getText();
+
+                if(ticketId.equals("")){
+                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập mã vé để xoá ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    database.connectDb();;
+                    if (homeNv.deleteTicket(ticketId)){
+                        JOptionPane.showMessageDialog(null,"Xoá vé thành công");
+                        resetTicket();
+                        String ticketIdTemp= generateRandomID();
+                        String ticketCode =ticketCodetmp ;
+                        if(ticketCode.equals(ticketCodetmp))
+                        {
+                            do {
+                                database.connectDb();
+                                ticketCode= ticketIdTemp;
+                            }while (homeNv.isTicketIdExists(ticketCode));
+                            txtMaTheDKVThang.setText(ticketCode);
+                        }
+                        txtMaTheDKVThang.setText(ticketIdTemp);
+                        showTableTicket();
+                    }
+                }
+            }
+        });
 
         tableVeThang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
