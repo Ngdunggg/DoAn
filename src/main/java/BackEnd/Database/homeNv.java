@@ -1,5 +1,6 @@
 package BackEnd.Database;
-import javax.swing.*;
+import com.mycompany.mytest.My;
+import javax.swing.JOptionPane;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.util.ArrayList;
@@ -69,26 +70,26 @@ public class homeNv {
     }
 
 
-    public static void insertVehicleInfo(String Plate, String name) throws SQLException {
+    public static void insertVehicleInfo(String Plate, String name,int areaId) throws SQLException {
 
-       PreparedStatement pst = con.prepareStatement("INSERT INTO public.vehicle(id, name) VALUES (?,?)");
+       PreparedStatement pst = con.prepareStatement("INSERT INTO public.vehicle(id, name,parking_area_id) VALUES (?,?,?)");
         pst.setString(1,Plate);
         pst.setString(2,name);
-        // Thực thi câu lệnh SQL.
+        pst.setInt(3,areaId);
+
         pst.executeUpdate();
     }
 
     public static void insertTicketInfo(String ticketCode, Timestamp timeIn, Integer ticketType, Integer area, String vehicle_id) throws SQLException {
 
-//        System.out.println(sql); // In câu lệnh SQL để kiểm tra xem có đúng không
-
         try {
-            PreparedStatement pst = con.prepareStatement("INSERT INTO public.ticket (id, time_in, area_id, ticket_type_id,vehicle_id) VALUES (?, ?, ?, ?,?)") ;
+            PreparedStatement pst = con.prepareStatement("INSERT INTO public.ticket (id, time_in, area_id, ticket_type_id,vehicle_id, emp_id) VALUES (?, ?, ?, ?,?, ?)") ;
             pst.setString(1, ticketCode);
             pst.setTimestamp(2, timeIn);
             pst.setInt(3, area);
             pst.setInt(4, ticketType);
             pst.setString(5,vehicle_id);
+            pst.setInt(6, Integer.parseInt(My.user_in));
 
             int rowsAffected = pst.executeUpdate();
             System.out.println("Rows affected: " + rowsAffected);
@@ -109,6 +110,14 @@ public class homeNv {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public static void insertTimeOut(Timestamp timeOut, String vehicleId) throws SQLException {
+
+        PreparedStatement pst = con.prepareStatement("UPDATE ticket SET  time_out = ? WHERE vehicle_id = ?");
+        pst.setTimestamp(1,timeOut);
+        pst.setString(2,vehicleId);
+
+        pst.executeUpdate();
     }
 
     public static Map<String,String> searchByVehicleId(String palte) throws SQLException
@@ -134,7 +143,7 @@ public class homeNv {
                 res.put("cost", resultSet.getString(9));
                 res.put("vehicle_name", resultSet.getString(10));
             } else {
-                // Xử lý khi không có dữ liệu được trả về
+
                 System.out.print("Khong co du lieu");
                 res.put("vehicle_id", "");
             }
@@ -170,7 +179,7 @@ public class homeNv {
                 res.put("cost", resultSet.getString(9));
                 res.put("vehicle_name", resultSet.getString(10));
             } else {
-                // Xử lý khi không có dữ liệu được trả về
+
                 System.out.print("Khong co du lieu");
                 res.put("id", "");
             }
@@ -212,16 +221,18 @@ public class homeNv {
     }
 
 
-    public  static void insertTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType,  int areaId) throws  SQLException
+    public  static void insertTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType,  int areaId, Timestamp timeIn,Timestamp outDate) throws  SQLException
     {
         try {
-            PreparedStatement pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id) values (?,?,?,?,?,?)");
+            PreparedStatement pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id,time_in,out_date) values (?,?,?,?,?,?,?,?)");
             pst.setString(1, ticketId);
             pst.setString(2, vehicleId);
             pst.setString(3, cusName);
             pst.setString(4, cusPhone);
             pst.setInt(5, ticketType);
             pst.setInt(6, areaId);
+            pst.setTimestamp(7,timeIn);
+            pst.setTimestamp(8,outDate);
 
             pst.executeUpdate();
         }catch (SQLException e)
@@ -237,10 +248,10 @@ public class homeNv {
             if (resultSet.next()) {
                 res.put("cost", resultSet.getString(1));
             } else {
-                res.put("cost", ""); // Nếu không có kết quả trả về, set giá trị cost là rỗng
+                res.put("cost", "");
             }
         } catch (SQLException e) {
-            res.put("cost", ""); // Xử lý nếu có lỗi xảy ra trong quá trình thực thi truy vấn
+            res.put("cost", "");
         }
         return res;
     }
@@ -257,7 +268,7 @@ public class homeNv {
                 res = resultSet.getString(1);
             }
             resultSet.close();
-            // Không đóng PreparedStatement ở đây để sử dụng lại
+
         } catch (SQLException e) {
             // Xử lý ngoại lệ
             e.printStackTrace();
@@ -340,6 +351,21 @@ public class homeNv {
             return true;
         }
     }
+    public static boolean vehicleIdExist(String plate) throws SQLException {
+        try {
+            PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM ticket WHERE vehicle_id = ?");
+            pst.setString(1, plate);
+            ResultSet resultSet = pst.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
 
 

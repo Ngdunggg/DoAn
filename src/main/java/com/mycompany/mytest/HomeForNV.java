@@ -7,13 +7,19 @@ package com.mycompany.mytest;
 import BackEnd.Database.database;
 import BackEnd.Database.homeNv;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 
@@ -120,8 +126,6 @@ public class HomeForNV extends javax.swing.JFrame {
         txtSdtDKVThang.setText(null);
     }
 
-
-    
     public void switchPanel(JPanel panel){
         Show.removeAll();
         Show.add(panel);
@@ -845,37 +849,39 @@ public class HomeForNV extends javax.swing.JFrame {
             private void btRaXRActionPerformed(ActionEvent evt) throws SQLException {
                 String checkOutTicketId = txtTimKiemXR.getText();
                 int op = boxLuaChonTimKiemXR.getSelectedIndex();
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeOut=time;
                 database.connectDb();
                 var resultList = homeNv.getTicketInfo();
-// Kiểm tra xem checkOutTicketId có trống không
                 if (checkOutTicketId.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Thông tin không được để trống!");
                 } else {
-                    // Kiểm tra nếu op không hợp lệ
+
                     if (op != 0 && op != 1) {
                         JOptionPane.showMessageDialog(null, "Lựa chọn không hợp lệ!");
                     } else {
-                        // Tiến hành so sánh với từng dòng dữ liệu trong resultList
-                        boolean found = false; // Biến này để xác định xem mã vé hoặc mã xe có tồn tại hay không
+
+                        boolean found = false;
                         for (Map<String, String> res : resultList) {
                             String ticketId = res.get("id");
                             String vehicleId = res.get("vehicle_id");
                             if (op == 0) {
                                 if (checkOutTicketId.equals(ticketId)) {
-                                    // Xử lý khi mã vé tồn tại
+
+                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
                                     found = true;
-                                    break; // Nếu mã vé tồn tại, thoát khỏi vòng lặp
+                                    break;
                                 }
                             } else if (op == 1) {
                                 if (checkOutTicketId.equals(vehicleId)) {
-                                    // Xử lý khi mã xe tồn tại
+                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
                                     found = true;
-                                    break; // Nếu mã xe tồn tại, thoát khỏi vòng lặp
+                                    break;
                                 }
                             }
                         }
                         if (found) {
-                            // Xử lý khi mã vé hoặc mã xe tồn tại
+
                             txtBienSoXR.setText("");
                             txtMaTheXR.setText("");
                             textGioVaoXR.setText("");
@@ -1217,6 +1223,12 @@ public class HomeForNV extends javax.swing.JFrame {
             }
 
             private void btDangKyVeThangActionPerformed(ActionEvent evt) throws SQLException {
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeDk = time;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(time);
+                calendar.add(Calendar.DAY_OF_MONTH, 30); // Thêm 30 ngày vào Timestamp
+                Timestamp timeOutDate = new Timestamp(calendar.getTimeInMillis());
                 String ticketIdTemp= generateRandomID();
                 String ticketCode =ticketCodetmp ;
                 if(ticketCode.equals(ticketCodetmp))
@@ -1244,8 +1256,8 @@ public class HomeForNV extends javax.swing.JFrame {
                     var resCost = homeNv.getCost(ticketType);
                     String cost = (String) resCost.get("cost");
                     JOptionPane.showMessageDialog(null,"Số tiền thanh toán: "+ cost +" VND");
-                    homeNv.insertVehicleInfo(vehicleId,vehicleName);
-                    homeNv.insertTicketMonth(ticketCode,vehicleId,cusName,cusPhone,ticketType,areaId);
+                    homeNv.insertVehicleInfo(vehicleId,vehicleName,areaId);
+                    homeNv.insertTicketMonth(ticketCode,vehicleId,cusName,cusPhone,ticketType,areaId,timeDk,timeOutDate);
                     txtMaTheDKVThang.setText(ticketIdTemp);
                     txtTienDKVThang.setText("");
                     txtBienSoDKVThang.setText("");
@@ -1255,7 +1267,6 @@ public class HomeForNV extends javax.swing.JFrame {
                 }else {
                     JOptionPane.showMessageDialog(null,"Thông tin không đúng hoặc để trống");
                 }
-
 
             }
         });
@@ -1487,49 +1498,99 @@ public class HomeForNV extends javax.swing.JFrame {
     }
 
 
-    private void btVaoActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btVaoActionPerformed
+    private void btVaoActionPerformed(ActionEvent evt) throws SQLException {//GEN-FIRST:event_btVaoActionPerformed
     String vehicle_id = textBienSo.getText();
     String vehicleName = (String) boxLuaChonLoaiXe.getSelectedItem();
-    int ticketType = boxLuaChonLoaiVe.getSelectedIndex()+1;
-    String ticketIdTemp= generateRandomID();
-    String ticketCode =ticketCodetmp ;
-
-    if(ticketCode == ticketCodetmp)
+    int vehicleType =0;
+    if(vehicleName.equals("xe máy")) vehicleType=1;
+    if(vehicleName.equals("ô tô")) vehicleType=2;
+    if(vehicleName.equals("xe đạp")) vehicleType=3;
+    String ticket_type_item = (String) boxLuaChonLoaiVe.getSelectedItem();
+    int ticketType = 0;
+    if (ticket_type_item.equals("Vé xe máy")) ticketType = 1;
+    if (ticket_type_item.equals("Vé ô tô")) ticketType = 3;
+    if (ticket_type_item.equals("Vé xe máy tháng")) ticketType = 2;
+    if (ticket_type_item.equals("vé ô tô tháng")) ticketType = 4;
+    if(vehicle_id.equals(""))
     {
-        do {
-            database.connectDb();
-            ticketCode= ticketIdTemp;
-        }while (homeNv.isTicketIdExists(ticketCode));
-        txtMaThe.setText(ticketCode);
+        JOptionPane.showMessageDialog(null,"Biển số xe đang trống, vui lòng điền thông tin này ","Thông báo",JOptionPane.INFORMATION_MESSAGE);
     }
-    Timestamp time = new Timestamp(System.currentTimeMillis());
-
-//    textGioVao.setText(String.valueOf(time));
-
-    String timeIn = String.valueOf(time);
-    Integer area =  boxLuaChonKhu.getSelectedIndex()+1;
-
-    if (vehicle_id.equals(""))
-    {
-        JOptionPane.showMessageDialog(null,"Thông tin không được để trống!");
-    }
-    try {
+    else {
         database.connectDb();
-    } catch (SQLException e) {
-            throw new RuntimeException(e);
-    }
+        if(( ticketType==2 && vehicleType ==1) ||( ticketType==4 && vehicleType ==2)){
+            if(homeNv.vehicleIdExist(vehicle_id)) {
+                JOptionPane.showMessageDialog(null, "Thêm xe thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                textBienSo.setText("");
+            }else{
+                JOptionPane.showMessageDialog(null, "Vehicle ID không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if(( ticketType==1 && vehicleType ==1) ||( ticketType==3 && vehicleType ==2)){
+            if (homeNv.vehicleIdExist(vehicle_id)){
+                String ticketIdTemp= generateRandomID();
+                String ticketCode =ticketCodetmp ;
 
-    try {
-        homeNv.insertVehicleInfo(vehicle_id,vehicleName);
-        homeNv.insertTicketInfo(ticketCode, Timestamp.valueOf(timeIn),ticketType,area,vehicle_id);
-        JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
-        txtBienSo.setText("");
-        txtMaThe.setText(ticketIdTemp);
-        textBienSo.setText("");
-        Timestamp time1 = new Timestamp(System.currentTimeMillis());
-        textGioVao.setText(String.valueOf(time1));
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
+                if(ticketCode == ticketCodetmp)
+                {
+                    do {
+                        database.connectDb();
+                        ticketCode= ticketIdTemp;
+                    }while (homeNv.isTicketIdExists(ticketCode));
+                    txtMaThe.setText(ticketCode);
+                }
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeIn = time;
+
+                int areaId =  boxLuaChonKhu.getSelectedIndex()+1;
+
+                try {
+                    database.connectDb();
+                    homeNv.insertTicketInfo(ticketCode, timeIn, ticketType, areaId, vehicle_id);
+                    JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
+                    txtBienSo.setText("");
+                    txtMaThe.setText(ticketIdTemp);
+                    textBienSo.setText("");
+                    Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                    textGioVao.setText(String.valueOf(time1));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                String ticketIdTemp= generateRandomID();
+                String ticketCode =ticketCodetmp ;
+
+                if(ticketCode == ticketCodetmp)
+                {
+                    do {
+                        database.connectDb();
+                        ticketCode= ticketIdTemp;
+                    }while (homeNv.isTicketIdExists(ticketCode));
+                    txtMaThe.setText(ticketCode);
+                }
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeIn = time;
+
+                int areaId =  boxLuaChonKhu.getSelectedIndex()+1;
+
+                try {
+                    database.connectDb();
+                    homeNv.insertVehicleInfo(vehicle_id,vehicleName,areaId);
+                    homeNv.insertTicketInfo(ticketCode, timeIn,ticketType,areaId,vehicle_id);
+                    JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
+                    txtBienSo.setText("");
+                    txtMaThe.setText(ticketIdTemp);
+                    textBienSo.setText("");
+                    Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                    textGioVao.setText(String.valueOf(time1));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }else {
+            JOptionPane.showMessageDialog(null, "Loại vé và loại xe không phù hợp", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+
     }
 
     showTable();

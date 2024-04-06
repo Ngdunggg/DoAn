@@ -20,7 +20,6 @@ public class database {
             Connection con = DriverManager.getConnection(url, username, password);
             st = con.createStatement();
             homeNv.setConnection(con);
-
             System.out.println("success connect to db");
         } catch (SQLException e) {
             e.printStackTrace();
