@@ -431,7 +431,7 @@ public class LuotGuiXe extends JFrame {
 
                 txtTongTien.setText(homeAdmin.sumMoney(selectedItem, selectedIndex, sqlDate, sqlDateLast));
                 txtTongLuotGui.setText(homeAdmin.sumLuotGui(selectedItem, selectedIndex, sqlDate, sqlDateLast));
-
+                if(txtTongLuotGui.getText().equals("")) txtTongLuotGui.setText("0");
 
             } else {
                 JOptionPane.showMessageDialog(null, "Ngày bắt đầu phải trước ngày kết thúc", "Thông báo", JOptionPane.INFORMATION_MESSAGE);

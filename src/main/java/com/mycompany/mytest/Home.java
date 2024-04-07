@@ -1191,7 +1191,7 @@ public class Home extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_btThoatCTrinhActionPerformed
 
-    private void btKhuGuiTKActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btKhuGuiTKActionPerformed
+    private void    btKhuGuiTKActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btKhuGuiTKActionPerformed
 //        jTable3
         String[] colsName = {"Tên khu gửi", "Lượng xe máy", "Lượng ô tô", "Chỗ trống xe máy", "Chỗ trống ô tô"};
         DefaultTableModel tableModel = new DefaultTableModel();

@@ -13,6 +13,8 @@ import java.awt.event.ActionListener;
 import java.security.SecureRandom;
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
@@ -45,14 +47,17 @@ public class HomeForNV extends JFrame {
 
     public void showTableXeRa() {
         DefaultTableModel tableModel = new DefaultTableModel();
+        Timestamp time = new Timestamp(System.currentTimeMillis());
         String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe","Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
         String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
                 "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
                 "FROM ticket t " +
                 "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
-                "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
-                "ORDER BY t.id ASC ";
+                "INNER JOIN vehicle v ON t.vehicle_id = v.id where t.time_out is null " +
+                "ORDER BY t.id ASC";
+
+        System.out.println(sql);
         String url = "jdbc:postgresql://localhost:5432/db_do_an";
         String username = "postgres";
         String password = "hanhtinhsongsong";
@@ -88,11 +93,12 @@ public class HomeForNV extends JFrame {
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe","Giờ vào", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
         String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, tt.cost, v.name AS vehicle_name, pa.name AS parking_area_name " +
                 "FROM ticket t " +
                 "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
                 "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
-                "INNER JOIN parking_area pa ON t.area_id = pa.id " +
+                "INNER JOIN parking_area pa ON t.area_id = pa.id where t.time_out is null " +
                 "ORDER BY t.id ASC";
         String url = "jdbc:postgresql://localhost:5432/db_do_an";
         String username = "postgres";
@@ -124,8 +130,6 @@ public class HomeForNV extends JFrame {
         txtTenKhachHang.setText(null);
         txtSdtDKVThang.setText(null);
     }
-
-
 
     public void switchPanel(JPanel panel){
         Show.removeAll();
@@ -850,37 +854,39 @@ public class HomeForNV extends JFrame {
             private void btRaXRActionPerformed(ActionEvent evt) throws SQLException {
                 String checkOutTicketId = txtTimKiemXR.getText();
                 int op = boxLuaChonTimKiemXR.getSelectedIndex();
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeOut=time;
                 database.connectDb();
                 var resultList = homeNv.getTicketInfo();
-// Kiểm tra xem checkOutTicketId có trống không
                 if (checkOutTicketId.isEmpty()) {
                     JOptionPane.showMessageDialog(null, "Thông tin không được để trống!");
                 } else {
-                    // Kiểm tra nếu op không hợp lệ
+
                     if (op != 0 && op != 1) {
                         JOptionPane.showMessageDialog(null, "Lựa chọn không hợp lệ!");
                     } else {
-                        // Tiến hành so sánh với từng dòng dữ liệu trong resultList
-                        boolean found = false; // Biến này để xác định xem mã vé hoặc mã xe có tồn tại hay không
+
+                        boolean found = false;
                         for (Map<String, String> res : resultList) {
                             String ticketId = res.get("id");
                             String vehicleId = res.get("vehicle_id");
                             if (op == 0) {
                                 if (checkOutTicketId.equals(ticketId)) {
-                                    // Xử lý khi mã vé tồn tại
+
+                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
                                     found = true;
-                                    break; // Nếu mã vé tồn tại, thoát khỏi vòng lặp
+                                    break;
                                 }
                             } else if (op == 1) {
                                 if (checkOutTicketId.equals(vehicleId)) {
-                                    // Xử lý khi mã xe tồn tại
+                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
                                     found = true;
-                                    break; // Nếu mã xe tồn tại, thoát khỏi vòng lặp
+                                    break;
                                 }
                             }
                         }
                         if (found) {
-                            // Xử lý khi mã vé hoặc mã xe tồn tại
+
                             txtBienSoXR.setText("");
                             txtMaTheXR.setText("");
                             textGioVaoXR.setText("");
@@ -891,6 +897,7 @@ public class HomeForNV extends JFrame {
                             txtTienXR.setText("");
                             txtTimKiemXR.setText("");
                             JOptionPane.showMessageDialog(null,"Thanh toán Thành công!");
+                            showTableXeRa();
                         } else {
                             JOptionPane.showMessageDialog(null, "Mã không tồn tại!");
                         }
@@ -1132,7 +1139,7 @@ public class HomeForNV extends JFrame {
 
         boxLoaiVeDKVThang.setModel(new DefaultComboBoxModel<>(new String[] { "Vé tháng xe máy", "Vé tháng ô tô" }));
 
-        boxLoaiXeDKVThang.setModel(new DefaultComboBoxModel<>(new String[] { "Xe máy", "Ô tô" }));
+        boxLoaiXeDKVThang.setModel(new DefaultComboBoxModel<>(new String[] { "xe máy", "ô tô" }));
 
         boxKhuGuiDKVThang.setModel(new DefaultComboBoxModel<>(new String[] { "Khu A", "Khu B", "Khu C" }));
 
@@ -1222,6 +1229,12 @@ public class HomeForNV extends JFrame {
             }
 
             private void btDangKyVeThangActionPerformed(ActionEvent evt) throws SQLException {
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeDk = time;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(time);
+                calendar.add(Calendar.DAY_OF_MONTH, 30); // Thêm 30 ngày vào Timestamp
+                Timestamp timeOutDate = new Timestamp(calendar.getTimeInMillis());
                 String ticketIdTemp= generateRandomID();
                 String ticketCode =ticketCodetmp ;
                 if(ticketCode.equals(ticketCodetmp))
@@ -1249,8 +1262,8 @@ public class HomeForNV extends JFrame {
                     var resCost = homeNv.getCost(ticketType);
                     String cost = (String) resCost.get("cost");
                     JOptionPane.showMessageDialog(null,"Số tiền thanh toán: "+ cost +" VND");
-                    homeNv.insertVehicleInfo(vehicleId,vehicleName);
-                    homeNv.insertTicketMonth(ticketCode,vehicleId,cusName,cusPhone,ticketType,areaId);
+                    homeNv.insertVehicleInfo(vehicleId,vehicleName,areaId);
+                    homeNv.insertTicketMonth(ticketCode,vehicleId,cusName,cusPhone,ticketType,areaId,timeDk,timeOutDate, Integer.parseInt(My.user_in));
                     txtMaTheDKVThang.setText(ticketIdTemp);
                     txtTienDKVThang.setText("");
                     txtBienSoDKVThang.setText("");
@@ -1260,8 +1273,7 @@ public class HomeForNV extends JFrame {
                 }else {
                     JOptionPane.showMessageDialog(null,"Thông tin không đúng hoặc để trống");
                 }
-
-
+                showTableTicket();
             }
         });
 
@@ -1270,10 +1282,92 @@ public class HomeForNV extends JFrame {
         btSuaDKVThang.setForeground(new Color(255, 255, 255));
         btSuaDKVThang.setText("Sửa");
 
+        btSuaDKVThang.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    btSuaDKVThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void btSuaDKVThangActionPerformed(ActionEvent evt) throws SQLException {
+                String ticketId = txtMaTheDKVThang.getText();
+                String vehicleId = txtBienSoDKVThang.getText();
+                String cusName = txtTenKhachHang.getText();
+                String cusPhone = txtSdtDKVThang.getText();
+                int ticketType = boxLoaiVeDKVThang.getSelectedIndex();
+                int vehicleType = boxLoaiXeDKVThang.getSelectedIndex();
+                String vehicleName = (String)boxLoaiXeDKVThang.getSelectedItem();
+                int areaId = boxKhuGuiDKVThang.getSelectedIndex()+1;
+                if(vehicleId.equals("") && vehicleType == ticketType ){
+                database.connectDb();
+                if(homeNv.updateTicketMonth(ticketId,vehicleId,cusName,cusPhone,ticketType,vehicleName,areaId)){
+                    JOptionPane.showMessageDialog(null,"Cập nhật thông tin thành công!","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+                    resetTicket();
+                    showTableTicket();
+                    String ticketIdTemp= generateRandomID();
+                    String ticketCode =ticketCodetmp ;
+                    if(ticketCode.equals(ticketCodetmp))
+                    {
+                        do {
+                            database.connectDb();
+                            ticketCode= ticketIdTemp;
+                        }while (homeNv.isTicketIdExists(ticketCode));
+                        txtMaTheDKVThang.setText(ticketCode);
+                    }
+                    txtMaTheDKVThang.setText(ticketIdTemp);
+                }}else{
+                    if(!vehicleId.equals("")) {
+                        JOptionPane.showMessageDialog(null, "Vui lòng để trống biển số xe vì thông tin này tương ứng với 1 mã vé duy nhất", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    if (vehicleType != ticketType){
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn đúng thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+                showTableTicket();
+            }
+        });
+
         btXoaDKVThang.setBackground(new Color(102, 102, 102));
         btXoaDKVThang.setFont(new Font("Segoe UI", 0, 18)); // NOI18N
         btXoaDKVThang.setForeground(new Color(255, 255, 255));
         btXoaDKVThang.setText("Xóa");
+        btXoaDKVThang.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    btXoaDKVThangActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private void btXoaDKVThangActionPerformed(ActionEvent evt) throws SQLException {
+                String ticketId = txtMaTheDKVThang.getText();
+
+                if(ticketId.equals("")){
+                    JOptionPane.showMessageDialog(null ,"Vui lòng nhập mã vé để xoá ", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }else{
+                    database.connectDb();;
+                    if (homeNv.deleteTicket(ticketId)){
+                        JOptionPane.showMessageDialog(null,"Xoá vé thành công");
+                        resetTicket();
+                        String ticketIdTemp= generateRandomID();
+                        String ticketCode =ticketCodetmp ;
+                        if(ticketCode.equals(ticketCodetmp))
+                        {
+                            do {
+                                database.connectDb();
+                                ticketCode= ticketIdTemp;
+                            }while (homeNv.isTicketIdExists(ticketCode));
+                            txtMaTheDKVThang.setText(ticketCode);
+                        }
+                        txtMaTheDKVThang.setText(ticketIdTemp);
+                        showTableTicket();
+                    }
+                }
+            }
+        });
 
         tableVeThang.setModel(new DefaultTableModel(
             new Object [][] {
@@ -1386,6 +1480,7 @@ public class HomeForNV extends JFrame {
 
     private void btXeVaoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btXeVaoActionPerformed
         switchPanel(plXeVao);
+        showTable();
     }//GEN-LAST:event_btXeVaoActionPerformed
 
     private void btThongKe1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btThongKe1ActionPerformed
@@ -1414,62 +1509,188 @@ public class HomeForNV extends JFrame {
     private void btVaoActionPerformed(ActionEvent evt) throws SQLException {//GEN-FIRST:event_btVaoActionPerformed
     String vehicle_id = textBienSo.getText();
     String vehicleName = (String) boxLuaChonLoaiXe.getSelectedItem();
+    int vehicleType =0;
+    if(vehicleName.equals("xe máy")) vehicleType=1;
+    if(vehicleName.equals("ô tô")) vehicleType=2;
+    if(vehicleName.equals("xe đạp")) vehicleType=3;
     String ticket_type_item = (String) boxLuaChonLoaiVe.getSelectedItem();
     int ticketType = 0;
     if (ticket_type_item.equals("Vé xe máy")) ticketType = 1;
     if (ticket_type_item.equals("Vé ô tô")) ticketType = 3;
     if (ticket_type_item.equals("Vé xe máy tháng")) ticketType = 2;
     if (ticket_type_item.equals("vé ô tô tháng")) ticketType = 4;
-
-
-    String ticketIdTemp= generateRandomID();
-    String ticketCode =ticketCodetmp ;
-
-    if(ticketCode == ticketCodetmp)
+    if(vehicle_id.equals(""))
     {
-        do {
-            database.connectDb();
-            ticketCode= ticketIdTemp;
-        }while (homeNv.isTicketIdExists(ticketCode));
-        txtMaThe.setText(ticketCode);
+        JOptionPane.showMessageDialog(null,"Biển số xe đang trống, vui lòng điền thông tin này ","Thông báo",JOptionPane.INFORMATION_MESSAGE);
     }
-    Timestamp time = new Timestamp(System.currentTimeMillis());
-
-//    textGioVao.setText(String.valueOf(time));
-
-    String timeIn = String.valueOf(time);
-    Integer area =  boxLuaChonKhu.getSelectedIndex()+1;
-
-    if (vehicle_id.equals(""))
-    {
-        JOptionPane.showMessageDialog(null,"Thông tin không được để trống!");
-    }
-    try {
+    else {
         database.connectDb();
-    } catch (SQLException e) {
-            throw new RuntimeException(e);
-    }
+        if(( ticketType==2 && vehicleType ==1) ||( ticketType==4 && vehicleType ==2)){
+            if(homeNv.vehicleIdExist(vehicle_id)) {
+                JOptionPane.showMessageDialog(null, "Thêm xe thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                textBienSo.setText("");
+            }else{
+                JOptionPane.showMessageDialog(null, "Vehicle ID không tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if(( ticketType==1 && vehicleType ==1) ||( ticketType==3 && vehicleType ==2)){
+            if (homeNv.vehicleIdExist(vehicle_id)){
+                String ticketIdTemp= generateRandomID();
+                String ticketCode =ticketCodetmp ;
 
-    try {
-        homeNv.insertVehicleInfo(vehicle_id,vehicleName);
-        homeNv.insertTicketInfo(ticketCode, Timestamp.valueOf(timeIn),ticketType,area,vehicle_id);
-        JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
-        txtBienSo.setText("");
-        txtMaThe.setText(ticketIdTemp);
-        textBienSo.setText("");
-        Timestamp time1 = new Timestamp(System.currentTimeMillis());
-        textGioVao.setText(String.valueOf(time1));
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
+                if(ticketCode == ticketCodetmp)
+                {
+                    do {
+                        database.connectDb();
+                        ticketCode= ticketIdTemp;
+                    }while (homeNv.isTicketIdExists(ticketCode));
+                    txtMaThe.setText(ticketCode);
+                }
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeIn = time;
+
+                int areaId =  boxLuaChonKhu.getSelectedIndex()+1;
+
+                try {
+                    database.connectDb();
+                    homeNv.insertTicketInfo(ticketCode, timeIn, ticketType, areaId, vehicle_id);
+                    JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
+                    txtBienSo.setText("");
+                    txtMaThe.setText(ticketIdTemp);
+                    textBienSo.setText("");
+                    Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                    textGioVao.setText(String.valueOf(time1));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                String ticketIdTemp= generateRandomID();
+                String ticketCode =ticketCodetmp ;
+
+                if(ticketCode == ticketCodetmp)
+                {
+                    do {
+                        database.connectDb();
+                        ticketCode= ticketIdTemp;
+                    }while (homeNv.isTicketIdExists(ticketCode));
+                    txtMaThe.setText(ticketCode);
+                }
+                Timestamp time = new Timestamp(System.currentTimeMillis());
+                Timestamp timeIn = time;
+
+                int areaId =  boxLuaChonKhu.getSelectedIndex()+1;
+
+                try {
+                    database.connectDb();
+                    homeNv.insertVehicleInfo(vehicle_id,vehicleName,areaId);
+                    homeNv.insertTicketInfo(ticketCode, timeIn,ticketType,areaId,vehicle_id);
+                    JOptionPane.showMessageDialog(null,"Thêm xe thành công!");
+                    txtBienSo.setText("");
+                    txtMaThe.setText(ticketIdTemp);
+                    textBienSo.setText("");
+                    Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                    textGioVao.setText(String.valueOf(time1));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }else {
+            JOptionPane.showMessageDialog(null, "Loại vé và loại xe không phù hợp", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+
     }
 
     showTable();
     }//GEN-LAST:event_btVaoActionPerformed
 
     private void textBienSoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_textBienSoActionPerformed
-        updateDateTime(textBienSo, textGioVao);
+        String url = "jdbc:postgresql://localhost:5432/db_do_an";
+        String username = "postgres";
+        String password = "hanhtinhsongsong";
+
         String bienSo = textBienSo.getText();
-        txtBienSo.setText(bienSo);
+        int ticketTypeId = 0;
+
+        String sql = "select ticket.vehicle_id, ticket.ticket_type_id\n" +
+                "from ticket \n" +
+                "where (ticket_type_id = 2 or ticket_type_id = 4) and (vehicle_id = '" + bienSo + "');";
+
+        String bienSoMonth = "ngon";
+        System.out.println(sql);
+        String ticketIdTemp= generateRandomID();
+
+        try {
+            Connection con = DriverManager.getConnection(url, username, password);
+            Statement st = con.createStatement();
+            System.out.println("success connect to db");
+            ResultSet resultSet = st.executeQuery(sql);
+            while (resultSet.next()) {
+                bienSoMonth = resultSet.getString(1);
+                ticketTypeId = resultSet.getInt(2);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(bienSoMonth + " " + ticketTypeId);
+
+        if (!bienSoMonth.equals("ngon")) {
+            txtBienSo.setText(bienSoMonth);
+            String currentTime = java.sql.Timestamp.from(Instant.now()).toString();
+            textGioVao.setText(currentTime);
+            if (ticketTypeId == 2) {
+                boxLuaChonLoaiXe.setSelectedItem("xe máy");
+                boxLuaChonLoaiXe.setSelectedItem("Vé xe máy tháng");
+                try {
+                    Connection con = DriverManager.getConnection(url, username, password);
+                    Statement st = con.createStatement();
+                    System.out.println("success connect to db");
+                    System.out.println(currentTime);
+                    sql = "update ticket \n" +
+                            "set time_out = null, time_in = '" + currentTime + "'\n" +
+                            "where vehicle_id = '" + bienSoMonth + "'";
+                    st.executeUpdate(sql);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                JOptionPane.showMessageDialog(null, "Xe đã đăng kí vé tháng vào thẳng", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                txtBienSo.setText("");
+                txtMaThe.setText(ticketIdTemp);
+                textBienSo.setText("");
+                Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                textGioVao.setText(String.valueOf(time1));
+
+                showTableXeRa();
+            } else {
+                boxLuaChonLoaiXe.setSelectedItem("ô tô");
+                boxLuaChonLoaiXe.setSelectedItem("vé ô tô tháng");
+                JOptionPane.showMessageDialog(null, "Xe đã đăng kí vé tháng vào thẳng", "Alert", JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    Connection con = DriverManager.getConnection(url, username, password);
+                    Statement st = con.createStatement();
+                    System.out.println("success connect to db");
+                    System.out.println(currentTime);
+                    sql = "update ticket \n" +
+                            "set time_out = null, time_in = '" + currentTime + "'\n" +
+                            "where vehicle_id = '" + bienSoMonth + "'";
+                    st.executeUpdate(sql);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                txtBienSo.setText("");
+                txtMaThe.setText(ticketIdTemp);
+                textBienSo.setText("");
+                Timestamp time1 = new Timestamp(System.currentTimeMillis());
+                textGioVao.setText(String.valueOf(time1));
+                showTableXeRa();
+            }
+
+        } else {
+            updateDateTime(textBienSo, textGioVao);
+            txtBienSo.setText(bienSo);
+        }
+
     }//GEN-LAST:event_textBienSoActionPerformed
 
     private void boxLuaChonLoaiXeActionPerformed(ActionEvent evt) {//GEN-FIRST:event_boxLuaChonLoaiXeActionPerformed
@@ -1511,12 +1732,20 @@ public class HomeForNV extends JFrame {
 
     private void btTKLuotGuiActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btTKLuotGuiActionPerformed
         this.dispose();
-        new LuotGuiXeNv().setVisible(true);
+        try {
+            new LuotGuiXeNv().setVisible(true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }//GEN-LAST:event_btTKLuotGuiActionPerformed
 
     private void btTKLuotDKVeThangActionPerformed(ActionEvent evt) {//GEN-FIRST:event_btTKLuotDKVeThangActionPerformed
         this.dispose();
-        new LuotDKVeThang().setVisible(true);
+        try {
+            new LuotDKVeThang().setVisible(true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }//GEN-LAST:event_btTKLuotDKVeThangActionPerformed
 
     private void txtMaTheDKVThangActionPerformed(ActionEvent evt) {//GEN-FIRST:event_txtMaTheDKVThangActionPerformed
@@ -1545,6 +1774,7 @@ public class HomeForNV extends JFrame {
             if(op == 0)
             {
                 database.connectDb();
+                homeNv.searchByTicketId(search);
                 var res = homeNv.searchByTicketId(search);
 
                 if(res.get("id").equals("")){
@@ -1558,6 +1788,9 @@ public class HomeForNV extends JFrame {
 //                    textGioVao.setText(String.valueOf(time_in));
                     Timestamp time = new Timestamp(System.currentTimeMillis());
                     String time_out = String.valueOf(time);
+                    String time_in = res.get("time_in");
+                    System.out.println(time_in);
+                    textGioVaoXR.setText(time_in);
                     textGioRaXR.setText(time_out);
                     String ticket_type = res.get("name");
                     txtLoaiVeXR.setText(ticket_type);
@@ -1602,6 +1835,7 @@ public class HomeForNV extends JFrame {
                     Timestamp time = new Timestamp(System.currentTimeMillis());
                     String time_out = String.valueOf(time);
                     textGioRaXR.setText(time_out);
+                    textGioVaoXR.setText(res.get("time_in"));
                     String ticket_type = res.get("name");
                     txtLoaiVeXR.setText(ticket_type);
                     String vehicle_type = res.get("vehicle_name");
