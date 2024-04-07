@@ -313,7 +313,7 @@ public class homeAdmin {
             updateSql = "ticket.time_out <= '" +  currentTime + "'";
             sql = sql + updateSql;
         } else {
-            updateSql = "where vehicle.name = '" + s + "' and ticket.time_out <= '" + currentTime + "' " + "and parking_area.name = '" + name_area + "'" ;
+            updateSql = "where vehicle.name = '" + s + "' and ticket.time_out is null " + "and parking_area.name = '" + name_area + "'" ;
             sql = sql + updateSql;
         }
         System.out.println(sql);

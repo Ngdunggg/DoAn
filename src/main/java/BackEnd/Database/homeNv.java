@@ -167,6 +167,7 @@ public class homeNv {
                     "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
                     "WHERE t.id ='"+ticket_id+"';";
             ResultSet resultSet = st.executeQuery((sql));
+            System.out.println(sql);
             if (resultSet.next()) {
                 res.put("id", resultSet.getString(1));
                 res.put("ticket_type_id",resultSet.getString(2));
@@ -221,10 +222,10 @@ public class homeNv {
     }
 
 
-    public  static void insertTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType,  int areaId, Timestamp timeIn,Timestamp outDate) throws  SQLException
+    public  static void insertTicketMonth(String ticketId, String vehicleId, String cusName, String cusPhone, int ticketType,  int areaId, Timestamp timeIn,Timestamp outDate, int emp_id) throws  SQLException
     {
         try {
-            PreparedStatement pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id,time_in,out_date) values (?,?,?,?,?,?,?,?)");
+            PreparedStatement pst = con.prepareStatement("insert into ticket(id, vehicle_id, cus_name, cus_phone, ticket_type_id, area_id,time_in,out_date, emp_id) values (?,?,?,?,?,?,?,?,?)");
             pst.setString(1, ticketId);
             pst.setString(2, vehicleId);
             pst.setString(3, cusName);
@@ -233,6 +234,7 @@ public class homeNv {
             pst.setInt(6, areaId);
             pst.setTimestamp(7,timeIn);
             pst.setTimestamp(8,outDate);
+            pst.setInt(9, emp_id);
 
             pst.executeUpdate();
         }catch (SQLException e)
