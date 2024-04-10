@@ -6,6 +6,7 @@ package com.mycompany.mytest;
 
 import BackEnd.Database.database;
 import BackEnd.Database.homeAdmin;
+import BackEnd.Database.dotenv;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.*;
@@ -39,9 +40,9 @@ public class Home extends javax.swing.JFrame {
          DefaultTableModel tableModel = new DefaultTableModel();
          String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
          tableModel.setColumnIdentifiers(colsName);
-         String url = "jdbc:postgresql://localhost:5432/db_do_an";
-         String usernameSql = "postgres";
-         String passwordSql = "hanhtinhsongsong";
+         String url = dotenv.PostgreUrl;
+         String usernameSql = dotenv.name;
+         String passwordSql = dotenv.password;
          Statement st;
          try {
              Connection connection = DriverManager.getConnection(url, usernameSql, passwordSql);
@@ -1196,9 +1197,9 @@ public class Home extends javax.swing.JFrame {
         String[] colsName = {"Tên khu gửi", "Lượng xe máy", "Lượng ô tô", "Chỗ trống xe máy", "Chỗ trống ô tô"};
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(colsName);
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         database.connectDb();
         try {
             Connection con = DriverManager.getConnection(url, username, password);

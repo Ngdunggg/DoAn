@@ -4,6 +4,7 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.dotenv;
 import com.toedter.calendar.JDateChooser;
 
 import java.awt.*;
@@ -42,9 +43,9 @@ public class LuotGuiXeNv extends JFrame {
     }
 
     public void TraCuuTongXe(Timestamp frist, Timestamp last, int option) {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
@@ -96,9 +97,9 @@ public class LuotGuiXeNv extends JFrame {
     }
 
     public void showAll() {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);

@@ -12,9 +12,11 @@ CREATE TABLE Ticket (
 	time_in Timestamp,
 	time_out Timestamp,
 	out_date Timestamp,
-	vehicle_id varchar(255) unique,
+	vehicle_id varchar(255),
 	area_id int,
 	emp_id serial,
+	cus_name varchar(255),
+	cus_phone varchar(25),
 	PRIMARY KEY (Id)
 );
 
@@ -26,10 +28,10 @@ CREATE Table Ticket_type (
 );
 
 Create table Vehicle (
-	id varchar(255),
+	id varchar(255) primary key,
 	parking_area_id int,
 	name varchar(255),
-	primary key(id)
+	status varchar(255)
 );
 
 create table Employee (
@@ -49,7 +51,7 @@ add foreign key(parking_area_id) references PARKING_AREA(id);
 
 alter table Ticket
 add foreign key(area_id) references PARKING_AREA(Id),
-add foreign key(vehicle_id) references Vehicle(Id),
+add foreign key(vehicle_id) references Vehicle(id),
 add foreign key(ticket_type_id) references Ticket_type(Id),
 add foreign key(emp_id) references Employee(Id);
 

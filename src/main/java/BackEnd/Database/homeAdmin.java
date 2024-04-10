@@ -271,7 +271,7 @@ public class homeAdmin {
     }
 
     public static String sumLuotGui(String s, int option, Timestamp frist, Timestamp last) throws SQLException {
-        String sql = "select sum(ticket_type.cost)\n" +
+        String sql = "select count(ticket.id)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -281,14 +281,14 @@ public class homeAdmin {
             sql = sql + "where (time_in >= '" + frist + "' and time_in <='" + last + "') " + sqlUpdate;
         }
         if (option == 0 && frist == null && last==null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select count(ticket.id)\n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                     "inner join parking_area on ticket.area_id = parking_area.id\n";
         }
         if (option == 0 && frist != null && last!=null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select count(ticket.id)\n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +

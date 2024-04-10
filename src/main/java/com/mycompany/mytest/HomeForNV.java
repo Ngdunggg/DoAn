@@ -5,6 +5,7 @@
 package com.mycompany.mytest;
 
 import BackEnd.Database.database;
+import BackEnd.Database.dotenv;
 import BackEnd.Database.homeNv;
 
 import java.awt.*;
@@ -58,9 +59,9 @@ public class HomeForNV extends JFrame {
                 "ORDER BY t.id ASC";
 
         System.out.println(sql);
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -100,9 +101,9 @@ public class HomeForNV extends JFrame {
                 "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
                 "INNER JOIN parking_area pa ON t.area_id = pa.id where t.time_out is null " +
                 "ORDER BY t.id ASC";
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -148,9 +149,9 @@ public class HomeForNV extends JFrame {
                 "INNER JOIN ticket_type ON ticket_type.id = ticket_type_id " +
                 "WHERE ticket_type_id = 2 OR ticket_type_id = 4";
 
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -873,7 +874,7 @@ public class HomeForNV extends JFrame {
                             if (op == 0) {
                                 if (checkOutTicketId.equals(ticketId)) {
 
-                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
+                                    homeNv.insertTimeOutTicket(timeOut,checkOutTicketId);
                                     found = true;
                                     break;
                                 }
@@ -1605,9 +1606,9 @@ public class HomeForNV extends JFrame {
     }//GEN-LAST:event_btVaoActionPerformed
 
     private void textBienSoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_textBienSoActionPerformed
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         String bienSo = textBienSo.getText();
         int ticketTypeId = 0;
@@ -1660,7 +1661,6 @@ public class HomeForNV extends JFrame {
                 textBienSo.setText("");
                 Timestamp time1 = new Timestamp(System.currentTimeMillis());
                 textGioVao.setText(String.valueOf(time1));
-
                 showTableXeRa();
             } else {
                 boxLuaChonLoaiXe.setSelectedItem("ô tô");

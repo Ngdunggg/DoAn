@@ -120,6 +120,15 @@ public class homeNv {
         pst.executeUpdate();
     }
 
+    public static void insertTimeOutTicket(Timestamp timeOut, String vehicleId) throws SQLException {
+
+        PreparedStatement pst = con.prepareStatement("UPDATE ticket SET  time_out = ? WHERE id = ?");
+        pst.setTimestamp(1,timeOut);
+        pst.setString(2,vehicleId);
+
+        pst.executeUpdate();
+    }
+
     public static Map<String,String> searchByVehicleId(String palte) throws SQLException
     {
         Map<String, String> res = new HashMap<>();
