@@ -861,7 +861,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel11.setIcon(new javax.swing.ImageIcon("C:\\Users\\ASUS\\Downloads\\parking-sign.png")); // NOI18N
+        jLabel11.setIcon(new javax.swing.ImageIcon("./img/parking-sign.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -879,7 +879,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel10.setIcon(new javax.swing.ImageIcon("C:\\Users\\ASUS\\Downloads\\parking-area.png")); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon("./img/parking-area.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -899,7 +899,7 @@ public class Home extends javax.swing.JFrame {
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel12.setIcon(new javax.swing.ImageIcon("C:\\Users\\ASUS\\Downloads\\car (1).png")); // NOI18N
+        jLabel12.setIcon(new javax.swing.ImageIcon("./img/car (1).png")); // NOI18N
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);

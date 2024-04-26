@@ -1033,7 +1033,7 @@ public class HomeForNV extends JFrame {
 
         jPanel10.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel12.setIcon(new javax.swing.ImageIcon("C:\\Users\\ASUS\\Downloads\\parking-area.png")); // NOI18N
+        jLabel12.setIcon(new javax.swing.ImageIcon("./img/parking-area.png")); // NOI18N
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -1053,7 +1053,7 @@ public class HomeForNV extends JFrame {
 
         jPanel12.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel13.setIcon(new javax.swing.ImageIcon("C:\\Users\\ASUS\\Downloads\\car (1).png")); // NOI18N
+        jLabel13.setIcon(new javax.swing.ImageIcon("./img/car (1).png")); // NOI18N
 
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
