@@ -12,7 +12,7 @@ CREATE TABLE Ticket (
 	time_in Timestamp,
 	time_out Timestamp,
 	out_date Timestamp,
-	vehicle_id varchar(255),
+	vehicle_id varchar(255) unique,
 	area_id int,
 	emp_id serial,
 	cus_name varchar(255),
