@@ -335,12 +335,6 @@ public class LuotGuiXe extends JFrame {
         btLamMoi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btLamMoi.setForeground(new java.awt.Color(255, 255, 255));
         btLamMoi.setText("Làm mới");
-        btLamMoi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAll();
-            }
-        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
