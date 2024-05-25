@@ -1,10 +1,10 @@
 package BackEnd.Database;
+
 import com.mycompany.mytest.My;
-import javax.swing.JOptionPane;
-import java.security.SecureRandom;
+
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class homeNv {
     public static List<Map<String, String>> getTicketInfo() throws SQLException {
         List<Map<String, String>> resultList = new ArrayList<>();
         String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
-                "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
+                "tt.name AS ticket_type_name, t.ticket_cost, v.name AS vehicle_name " +
                 "FROM ticket t " +
                 "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
                 "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
@@ -112,7 +112,6 @@ public class homeNv {
         }
     }
     public static void insertTimeOut(Timestamp timeOut, String vehicleId) throws SQLException {
-
         PreparedStatement pst = con.prepareStatement("UPDATE ticket SET  time_out = ? WHERE vehicle_id = ?");
         pst.setTimestamp(1,timeOut);
         pst.setString(2,vehicleId);
@@ -170,13 +169,13 @@ public class homeNv {
         Map<String, String> res = new HashMap<>();
         try {
             String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
-                    "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
+                    "tt.name AS ticket_type_name, t.ticket_cost, v.name AS vehicle_name " +
                     "FROM ticket t " +
                     "INNER JOIN ticket_type tt ON t.ticket_type_id = tt.id " +
                     "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
                     "WHERE t.id ='"+ticket_id+"';";
             ResultSet resultSet = st.executeQuery((sql));
-            System.out.println(sql);
+
             if (resultSet.next()) {
                 res.put("id", resultSet.getString(1));
                 res.put("ticket_type_id",resultSet.getString(2));
@@ -186,8 +185,9 @@ public class homeNv {
                 res.put("vehicle_id",resultSet.getString(6));
                 res.put("area_id",resultSet.getString(7));
                 res.put("name", resultSet.getString(8));
-                res.put("cost", resultSet.getString(9));
+                res.put("cost", String.valueOf(resultSet.getInt(9)));
                 res.put("vehicle_name", resultSet.getString(10));
+                System.out.println(res.get("cost"));
             } else {
 
                 System.out.print("Khong co du lieu");
@@ -203,17 +203,71 @@ public class homeNv {
         }
     }
 
-    public void insertVehicleType(int vehicleType) throws SQLException
+    public static int calculator_day(String ticket_id) throws SQLException
     {
+//        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp());
         try {
-            PreparedStatement pst = con.prepareStatement("insert into vehicle(name) values(?)");
-            pst.setInt(1,vehicleType);
 
-            pst.executeUpdate();
-
+            String sql = "select time_in from ticket where id = '" + ticket_id + "'";
+            ResultSet resultSet = st.executeQuery((sql));
+            resultSet.next();
+            System.out.println(sql);
+            Timestamp s = resultSet.getTimestamp(1);
+            Timestamp time = new Timestamp(System.currentTimeMillis());
+            long time1 = s.getTime();
+            long time2 = time.getTime();
+            int res = (int) ((time2-time1)/86400000);
+            return res;
         }catch (SQLException e)
         {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static Map<String, Integer> get_ticket_cost(String ticket_id) throws SQLException
+    {
+//        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp());
+        try {
+
+            String sql = "select ticket_type.cost, ticket_type.id \n" +
+                    "from ticket inner join ticket_type on ticket.ticket_type_id = ticket_type.id \n" +
+                    "where ticket.id = '" + ticket_id +"'";
+            ResultSet resultSet = st.executeQuery((sql));
+            resultSet.next();
+            Integer res = resultSet.getInt(1);
+            Integer id = resultSet.getInt(2);
+            Map<String, Integer> row = new HashMap<>();
+            row.put("cost", res);
+            row.put("ticket_type_id", id);
+            return row;
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void update_ticket_cost(String ticket_id) throws SQLException
+    {
+//        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Timestamp());
+        Map<String, Integer> get_ticket_type = get_ticket_cost(ticket_id);
+        int cost = 1;
+        if(get_ticket_type.get("ticket_type_id") == 2 || get_ticket_type.get("ticket_type_id") == 4 || calculator_day(ticket_id)==0) {
+            cost = get_ticket_type.get("cost");
+        } else {
+            cost = get_ticket_type.get("cost") * calculator_day(ticket_id);
+        }
+        try {
+
+            String sql = "UPDATE ticket\n" +
+                    "SET ticket_cost = " + cost +"\n" +
+                    "where ticket.id = '" + ticket_id + "'";
+            System.out.println(sql);
+            st.executeUpdate(sql);
+        }catch (SQLException e)
+        {
+            e.printStackTrace();
         }
     }
 

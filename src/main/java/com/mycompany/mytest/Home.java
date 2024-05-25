@@ -231,7 +231,7 @@ public class Home extends javax.swing.JFrame {
         btThongKe.setBackground(new java.awt.Color(51, 51, 51));
         btThongKe.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         btThongKe.setForeground(new java.awt.Color(255, 255, 255));
-        btThongKe.setText("Thống kê");
+        btThongKe.setText("Filter");
         btThongKe.setBorder(null);
         btThongKe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -29,7 +29,6 @@ public class LuotDKVeThang extends javax.swing.JFrame {
         showAll();
         txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang("Tổng xe", -1, null, null));
         txtTongTien.setText(homeAdmin.sumMoneyMonth("Tổng xe", -1, null, null));
-
     }
 
     public void showAll() {

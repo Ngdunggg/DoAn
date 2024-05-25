@@ -54,21 +54,21 @@ public class LuotGuiXeNv extends JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
             Statement st = con.createStatement();
             System.out.println("success connect to db");
-            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                     "inner join parking_area on ticket.area_id = parking_area.id\n" +
                     "where time_in >= '" + frist + "' and time_in <='" + last + "'";
             if(option == 1) {
-                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                         "from ticket\n" +
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                         "inner join parking_area on ticket.area_id = parking_area.id\n" +
                         "where time_in >= '" + frist + "' and time_in <='" + last + "' and vehicle.name = 'xe máy'";
             } else if (option == 2) {
-                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                         "from ticket\n" +
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -108,7 +108,7 @@ public class LuotGuiXeNv extends JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
             Statement st = con.createStatement();
             System.out.println("success connect to db");
-            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +

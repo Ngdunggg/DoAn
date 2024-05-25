@@ -4,8 +4,11 @@
  */
 package com.mycompany.mytest;
 import BackEnd.Database.database;
+import BackEnd.Database.dotenv;
 import BackEnd.Database.homeAdmin;
-import java.sql.SQLException;
+
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
 
 /**
  *
@@ -17,7 +20,9 @@ public class DanhGiaAdmin extends javax.swing.JFrame {
      * Creates new form DanhGiaAdmin
      */
     public DanhGiaAdmin() {
+
         initComponents();
+        showTable();
         setLocationRelativeTo(null);
     }
 
@@ -121,6 +126,38 @@ public class DanhGiaAdmin extends javax.swing.JFrame {
      new Home().setVisible(true);
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
+    public static void showTable() {
+        DefaultTableModel tableModel = new DefaultTableModel();
+        String[] colsName = {"Tên khách hàng", "Loại xe", "Số điện thoại", "Lí do", "Ghi chú khách hàng"};
+        tableModel.setColumnIdentifiers(colsName);
+        String sql = "SELECT * FROM public.customer_complain\n" +
+                "ORDER BY id ASC ";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+
+        try {
+            Connection con = DriverManager.getConnection(url, username, password);
+            Statement st = con.createStatement();
+            ResultSet resultSet = st.executeQuery(sql);
+            System.out.println("success connect to db");
+            while(resultSet.next()) {
+                String row[] = new String[5];
+                row[0] = resultSet.getString(2);
+                row[1] = resultSet.getString(3);
+                row[2] = resultSet.getString(4);
+                row[3] = resultSet.getString(5);
+                row[4] = resultSet.getString(6);
+
+                tableModel.addRow(row);
+            }
+            tbDanhGia.setModel(tableModel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -152,6 +189,7 @@ public class DanhGiaAdmin extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new DanhGiaAdmin().setVisible(true);
+                showTable();
             }
         });
     }
@@ -161,6 +199,6 @@ public class DanhGiaAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tbDanhGia;
+    private static javax.swing.JTable tbDanhGia;
     // End of variables declaration//GEN-END:variables
 }
