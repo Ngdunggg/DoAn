@@ -4,6 +4,7 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.dotenv;
 import com.toedter.calendar.JDateChooser;
 
 import java.awt.*;
@@ -42,9 +43,9 @@ public class LuotGuiXeNv extends JFrame {
     }
 
     public void TraCuuTongXe(Timestamp frist, Timestamp last, int option) {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
@@ -53,21 +54,21 @@ public class LuotGuiXeNv extends JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
             Statement st = con.createStatement();
             System.out.println("success connect to db");
-            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                     "inner join parking_area on ticket.area_id = parking_area.id\n" +
                     "where time_in >= '" + frist + "' and time_in <='" + last + "'";
             if(option == 1) {
-                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                         "from ticket\n" +
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                         "inner join parking_area on ticket.area_id = parking_area.id\n" +
                         "where time_in >= '" + frist + "' and time_in <='" + last + "' and vehicle.name = 'xe máy'";
             } else if (option == 2) {
-                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+                sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                         "from ticket\n" +
                         "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                         "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -96,9 +97,9 @@ public class LuotGuiXeNv extends JFrame {
     }
 
     public void showAll() {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
@@ -107,7 +108,7 @@ public class LuotGuiXeNv extends JFrame {
             Connection con = DriverManager.getConnection(url, username, password);
             Statement st = con.createStatement();
             System.out.println("success connect to db");
-            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket_type.cost  \n" +
+            String sql = "select ticket.id, vehicle_id, vehicle.name, ticket_type.name, parking_area.name, time_in, time_out, ticket.ticket_cost  \n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +

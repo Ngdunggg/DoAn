@@ -3,12 +3,10 @@ package BackEnd.Database;
 import javax.swing.*;
 import java.sql.*;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import static java.lang.Integer.*;
+import static java.lang.Integer.parseInt;
 
 public class homeAdmin {
     private static Statement st = database.getSt();
@@ -237,7 +235,7 @@ public class homeAdmin {
     }
 
     public static String sumMoney(String s, int option, Timestamp frist, Timestamp last) throws SQLException {
-        String sql = "select sum(ticket_type.cost)\n" +
+        String sql = "select sum(ticket.ticket_cost)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -247,14 +245,14 @@ public class homeAdmin {
             sql = sql + "where (time_in >= '" + frist + "' and time_in <='" + last + "') " + sqlUpdate;
         }
         if (option == 0 && frist == null && last==null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select sum(ticket.ticket_cost)\n" +
             "from ticket\n" +
             "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
             "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
             "inner join parking_area on ticket.area_id = parking_area.id\n";
         }
         if (option == 0 && frist != null && last!=null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select sum(ticket.ticket_cost)\n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -271,7 +269,7 @@ public class homeAdmin {
     }
 
     public static String sumLuotGui(String s, int option, Timestamp frist, Timestamp last) throws SQLException {
-        String sql = "select sum(ticket_type.cost)\n" +
+        String sql = "select count(ticket.id)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -281,14 +279,14 @@ public class homeAdmin {
             sql = sql + "where (time_in >= '" + frist + "' and time_in <='" + last + "') " + sqlUpdate;
         }
         if (option == 0 && frist == null && last==null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select count(ticket.id)\n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
                     "inner join parking_area on ticket.area_id = parking_area.id\n";
         }
         if (option == 0 && frist != null && last!=null) {
-            sql = "select sum(ticket_type.cost)\n" +
+            sql = "select count(ticket.id)\n" +
                     "from ticket\n" +
                     "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                     "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +
@@ -348,7 +346,7 @@ public class homeAdmin {
     }
 
     public static String sumMoneyMonth(String s, int options, Timestamp sqlDate, Timestamp sqlDateLast) throws SQLException {
-        String sql = "select sum(ticket_type.cost)\n" +
+        String sql = "select sum(ticket.ticket_cost)\n" +
                 "from ticket\n" +
                 "inner join ticket_type on ticket.ticket_type_id = ticket_type.id\n" +
                 "inner join vehicle on ticket.vehicle_id = vehicle.id\n" +

@@ -4,6 +4,7 @@
  */
 package com.mycompany.mytest;
 import BackEnd.Database.database;
+import BackEnd.Database.dotenv;
 import BackEnd.Database.homeAdmin;
 
 import javax.swing.*;
@@ -28,13 +29,12 @@ public class LuotDKVeThang extends javax.swing.JFrame {
         showAll();
         txtTongLuotDKVe.setText(homeAdmin.countLuotGuiThang("Tổng xe", -1, null, null));
         txtTongTien.setText(homeAdmin.sumMoneyMonth("Tổng xe", -1, null, null));
-
     }
 
     public void showAll() {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "hanhtinhsongsong";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
         tableModel.setColumnIdentifiers(colsName);
@@ -362,9 +362,9 @@ public class LuotDKVeThang extends javax.swing.JFrame {
         } else {
             sqlDate = new Timestamp(date.getTime());
             sqlDateLast = new Timestamp(date_last.getTime());
-            String url = "jdbc:postgresql://localhost:5432/db_do_an";
-            String username = "postgres";
-            String password = "hanhtinhsongsong";
+            String url = dotenv.PostgreUrl;
+            String username = dotenv.name;
+            String password = dotenv.password;
             DefaultTableModel tableModel = new DefaultTableModel();
             String[] colsName = {"Mã số thẻ", "Biển số", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra", "Số tiền"};
             tableModel.setColumnIdentifiers(colsName);
