@@ -6,6 +6,7 @@ package com.mycompany.mytest;
 
 import BackEnd.Database.database;
 import BackEnd.Database.homeAdmin;
+import BackEnd.Database.dotenv;
 
 import javax.sound.midi.SysexMessage;
 import javax.swing.*;
@@ -41,9 +42,9 @@ public class Home extends javax.swing.JFrame {
          DefaultTableModel tableModel = new DefaultTableModel();
          String[] colsName = {"Mã nhân viên", "Họ và tên", "Năm sinh", "Số điện thoại", "Địa chỉ", "Vai trò", "Username", "Password"};
          tableModel.setColumnIdentifiers(colsName);
-         String url = "jdbc:postgresql://localhost:5432/db_do_an";
-         String usernameSql = "postgres";
-         String passwordSql = "123456";
+         String url = dotenv.PostgreUrl;
+         String usernameSql = dotenv.name;
+         String passwordSql = dotenv.password;
          Statement st;
          try {
              Connection connection = DriverManager.getConnection(url, usernameSql, passwordSql);
@@ -230,7 +231,7 @@ public class Home extends javax.swing.JFrame {
         btThongKe.setBackground(new java.awt.Color(51, 51, 51));
         btThongKe.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         btThongKe.setForeground(new java.awt.Color(255, 255, 255));
-        btThongKe.setText("Thống kê");
+        btThongKe.setText("Filter");
         btThongKe.setBorder(null);
         btThongKe.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -727,7 +728,7 @@ public class Home extends javax.swing.JFrame {
                 }
         ) {
             Class[] types = new Class [] {
-                    java.lang.String.class, java.lang.Long.class
+                java.lang.String.class, java.lang.Long.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -1264,9 +1265,9 @@ public class Home extends javax.swing.JFrame {
         String[] colsName = {"Tên khu gửi", "Lượng xe máy", "Lượng ô tô", "Chỗ trống xe máy", "Chỗ trống ô tô"};
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(colsName);
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
         database.connectDb();
         try {
             Connection con = DriverManager.getConnection(url, username, password);

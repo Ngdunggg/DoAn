@@ -4,7 +4,14 @@
  */
 package com.mycompany.mytest;
 import BackEnd.Database.database;
+import BackEnd.Database.dotenv;
 import BackEnd.Database.homeNv;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.sql.*;
+
 /**
  *
  * @author ASUS
@@ -130,6 +137,11 @@ public class DanhGia extends javax.swing.JFrame {
         btLuuGhiChu.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         btLuuGhiChu.setForeground(new java.awt.Color(255, 255, 255));
         btLuuGhiChu.setText("Lưu");
+        btLuuGhiChu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btLuuGhiChuActionPerformed(evt);
+            }
+        });
 
         jLabel13.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel13.setText("Ghi chú");
@@ -191,10 +203,46 @@ public class DanhGia extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btLuuGhiChuActionPerformed(ActionEvent evt) {
+        String ghiChu = txtGhiChu.getText();
+        String tenKhachHang = txtTenKH.getText();
+        String loaiXe = boxLoaiXeKH.getSelectedItem().toString();
+        String liDo = txtLyDo.getText();
+        String sdt = txtSDTKH.getText();
+
+        if (ghiChu.equals("") || tenKhachHang.equals("") || liDo.equals("") || sdt.equals("")) {
+            JOptionPane.showMessageDialog(null ,"Vui lòng nhập đầy đủ thông tin", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        String sql = "INSERT INTO public.customer_complain(\n" +
+                "\tfullname, vehicle_name, phone_num, reason, note)\n" +
+                "\tVALUES ('" + tenKhachHang + "', '" + loaiXe + "', " + sdt + ", '" + liDo + "', '" + ghiChu + "');";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        System.out.println(sql);
+
+        try {
+            Connection con = DriverManager.getConnection(url, username, password);
+            Statement st = con.createStatement();
+            homeNv.setConnection(con);
+            st.executeQuery(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        txtGhiChu.setText("");
+        txtLyDo.setText("");
+        txtSDTKH.setText("");
+        txtTenKH.setText("");
+        JOptionPane.showMessageDialog(null ,"Khiếu nại thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         this.dispose();
      new HomeForNV().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
 
     /**
      * @param args the command line arguments

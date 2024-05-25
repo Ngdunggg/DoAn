@@ -12,9 +12,9 @@ public class database {
     private static Statement st;
 
     public static void connectDb() throws SQLException {
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);

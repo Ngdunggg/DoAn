@@ -5,6 +5,7 @@
 package com.mycompany.mytest;
 
 import BackEnd.Database.database;
+import BackEnd.Database.dotenv;
 import BackEnd.Database.homeNv;
 
 import java.awt.*;
@@ -49,7 +50,7 @@ public class HomeForNV extends JFrame {
     public void showTableXeRa() {
         DefaultTableModel tableModel = new DefaultTableModel();
         Timestamp time = new Timestamp(System.currentTimeMillis());
-        String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe","Giờ vào", "Giờ ra", "Số tiền"};
+        String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe", "Loại vé", "Giờ vào"};
         tableModel.setColumnIdentifiers(colsName);
         String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, " +
                 "tt.name AS ticket_type_name, tt.cost, v.name AS vehicle_name " +
@@ -59,9 +60,9 @@ public class HomeForNV extends JFrame {
                 "ORDER BY t.id ASC";
 
         System.out.println(sql);
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -69,14 +70,15 @@ public class HomeForNV extends JFrame {
             ResultSet resultSet = st.executeQuery(sql);
             System.out.println("success connect to db");
             while(resultSet.next()) {
-                String row[] = new String[7];
+                String row[] = new String[6];
                 row[0] = resultSet.getString(1);
                 row[1] = resultSet.getString(6);
                 row[2] = resultSet.getString(7);
                 row[3] = resultSet.getString(10);
                 row[4] = resultSet.getString(3);
-                row[5] = resultSet.getString(4);
-                row[6] = resultSet.getString(9);
+                row[5] = resultSet.getString(3);
+//                row[5] = resultSet.getString(4);
+//                row[5] = resultSet.getString(9);
                 tableModel.addRow(row);
             }
             tableXR.setModel(tableModel);
@@ -92,7 +94,7 @@ public class HomeForNV extends JFrame {
 
     public void showTable() {
         DefaultTableModel tableModel = new DefaultTableModel();
-        String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe","Giờ vào", "Số tiền"};
+        String[] colsName = {"Mã vé", "Biển số xe", "Khu gửi","Loại xe","Giờ vào"};
         tableModel.setColumnIdentifiers(colsName);
         Timestamp time = new Timestamp(System.currentTimeMillis());
         String sql = "SELECT t.id, t.ticket_type_id, t.time_in, t.time_out, t.out_date, t.vehicle_id, t.area_id, tt.cost, v.name AS vehicle_name, pa.name AS parking_area_name " +
@@ -101,9 +103,9 @@ public class HomeForNV extends JFrame {
                 "INNER JOIN vehicle v ON t.vehicle_id = v.id " +
                 "INNER JOIN parking_area pa ON t.area_id = pa.id where t.time_out is null " +
                 "ORDER BY t.id ASC";
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -111,13 +113,13 @@ public class HomeForNV extends JFrame {
             ResultSet resultSet = st.executeQuery(sql);
             System.out.println("success connect to db");
             while(resultSet.next()) {
-                String row[] = new String[6];
+                String row[] = new String[5];
                 row[0] = resultSet.getString(1);
                 row[1] = resultSet.getString(6);
                 row[2] = resultSet.getString(10);
                 row[3] = resultSet.getString(9);
                 row[4] = resultSet.getString(3);
-                row[5] = resultSet.getString(8);
+//                row[5] = resultSet.getString(8);
                 tableModel.addRow(row);
             }
             tableXevao.setModel(tableModel);
@@ -143,15 +145,15 @@ public class HomeForNV extends JFrame {
         String[] colsName = {"Mã vé", "Tên Khách Hàng", "Số điện thoại","Biển số xe","Loại xe", "Loai vé","Ngày đăng ký","Tiền"};
         tableModel.setColumnIdentifiers(colsName);
         String sql = "SELECT ticket.id, cus_name, cus_phone, vehicle_id, vehicle.name AS vehicle_name, " +
-                "ticket_type.name AS ticket_name, time_in, ticket_type.cost AS cost " +
+                "ticket_type.name AS ticket_name, time_in, ticket.ticket_cost AS cost " +
                 "FROM ticket " +
+                "inner join ticket_type on ticket_type.id = ticket.ticket_type_id " +
                 "INNER JOIN vehicle ON vehicle.id = vehicle_id " +
-                "INNER JOIN ticket_type ON ticket_type.id = ticket_type_id " +
                 "WHERE ticket_type_id = 2 OR ticket_type_id = 4";
 
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         try {
             Connection con = DriverManager.getConnection(url, username, password);
@@ -315,7 +317,7 @@ public class HomeForNV extends JFrame {
         btThongKe1.setBackground(new java.awt.Color(51, 51, 51));
         btThongKe1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         btThongKe1.setForeground(new java.awt.Color(255, 255, 255));
-        btThongKe1.setText("Thống kê");
+        btThongKe1.setText("Filter");
         btThongKe1.setBorder(null);
         btThongKe1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -867,7 +869,7 @@ public class HomeForNV extends JFrame {
                 String checkOutTicketId = txtTimKiemXR.getText();
                 int op = boxLuaChonTimKiemXR.getSelectedIndex();
                 Timestamp time = new Timestamp(System.currentTimeMillis());
-                Timestamp timeOut=time;
+                Timestamp timeOut = time;
                 database.connectDb();
                 var resultList = homeNv.getTicketInfo();
                 if (checkOutTicketId.isEmpty()) {
@@ -877,15 +879,14 @@ public class HomeForNV extends JFrame {
                     if (op != 0 && op != 1) {
                         JOptionPane.showMessageDialog(null, "Lựa chọn không hợp lệ!");
                     } else {
-
                         boolean found = false;
                         for (Map<String, String> res : resultList) {
                             String ticketId = res.get("id");
                             String vehicleId = res.get("vehicle_id");
                             if (op == 0) {
                                 if (checkOutTicketId.equals(ticketId)) {
-
-                                    homeNv.insertTimeOut(timeOut,checkOutTicketId);
+                                    homeNv.update_ticket_cost(ticketId);
+                                    homeNv.insertTimeOutTicket(timeOut,checkOutTicketId);
                                     found = true;
                                     break;
                                 }
@@ -908,6 +909,7 @@ public class HomeForNV extends JFrame {
                             txtKhuGuiXR.setText("");
                             txtTienXR.setText("");
                             txtTimKiemXR.setText("");
+
                             JOptionPane.showMessageDialog(null,"Thanh toán Thành công!");
                             showTableXeRa();
                         } else {
@@ -1173,7 +1175,7 @@ public class HomeForNV extends JFrame {
             }
         });
 
-        jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel31.setFont(new Font("Segoe UI", 0, 18)); // NOI18N
         jLabel31.setText("Loại xe:");
 
         jLabel32.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -1648,9 +1650,9 @@ public class HomeForNV extends JFrame {
     }//GEN-LAST:event_btVaoActionPerformed
 
     private void textBienSoActionPerformed(ActionEvent evt) {//GEN-FIRST:event_textBienSoActionPerformed
-        String url = "jdbc:postgresql://localhost:5432/db_do_an";
-        String username = "postgres";
-        String password = "123456";
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
 
         String bienSo = textBienSo.getText();
         int ticketTypeId = 0;
@@ -1817,7 +1819,7 @@ public class HomeForNV extends JFrame {
             if(op == 0)
             {
                 database.connectDb();
-                homeNv.searchByTicketId(search);
+                homeNv.update_ticket_cost(search);
                 var res = homeNv.searchByTicketId(search);
 
                 if(res.get("id").equals("")){
@@ -1845,17 +1847,16 @@ public class HomeForNV extends JFrame {
                     txtTienXR.setText(cost);
 
                     DefaultTableModel tableModel = new DefaultTableModel();
-                    String [] colsName = {"Mã thẻ", "Biển số xe", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào", "Giờ ra","Tiền"};
+                    String [] colsName = {"Mã thẻ", "Biển số xe", "Loại xe", "Loại vé", "Khu gửi", "Giờ vào","Tiền"};
                     tableModel.setColumnIdentifiers(colsName);
-                    String row[] = new String[8];
+                    String row[] = new String[7];
                     row[0] = res.get("id");
                     row[1] = res.get("vehicle_id");
                     row[2]= res.get("vehicle_name");
                     row[3] = res.get("name");
                     row[4] = res.get("area_id");
                     row[5] = res.get("time_in");
-                    row[6] = res.get("time_out");
-                    row[7] = res.get("cost");
+                    row[6] = res.get("cost");
                     tableModel.addRow(row);
                     tableXR.setModel(tableModel);
                 }
@@ -1920,7 +1921,7 @@ public class HomeForNV extends JFrame {
         this.dispose();
         new DanhGia().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
-    
+
     public void updateDateTime(JTextField txt, JTextField tt){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date now = new Date();
