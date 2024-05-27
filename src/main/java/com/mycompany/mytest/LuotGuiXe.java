@@ -337,12 +337,6 @@ public class LuotGuiXe extends JFrame {
         btLamMoi.setFont(new Font("Segoe UI", 0, 18)); // NOI18N
         btLamMoi.setForeground(new Color(255, 255, 255));
         btLamMoi.setText("Làm mới");
-        btLamMoi.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showAll();
-            }
-        });
 
         btQuayLai1.setBackground(new Color(102, 102, 102));
         btQuayLai1.setFont(new Font("Segoe UI", 0, 18)); // NOI18N
