@@ -102,7 +102,6 @@ public class homeNv {
     {
         String sql = "SELECT id FROM ticket_type";
         try {
-
             ResultSet resultSet = st.executeQuery((sql));
             String rs;
             rs = resultSet.getString(1);

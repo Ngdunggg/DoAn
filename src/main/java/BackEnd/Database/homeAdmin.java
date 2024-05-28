@@ -407,7 +407,7 @@ public class homeAdmin {
         Connection con = DriverManager.getConnection(url, username, password);
         st = con.createStatement();
 
-        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+        String sql = "SELECT count(ticket_cost) as sumOfVehicle FROM public.ticket\n" +
                 "where time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "'";
         ResultSet resultSet = st.executeQuery(sql);
         resultSet.next();
@@ -422,7 +422,7 @@ public class homeAdmin {
         Connection con = DriverManager.getConnection(url, username, password);
         st = con.createStatement();
 
-        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+        String sql = "SELECT count(ticket_cost) as sumOfVehicle FROM public.ticket\n" +
                 "where (ticket_type_id = 2 or ticket_type_id = 1) and (time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "')";
         ResultSet resultSet = st.executeQuery(sql);
         resultSet.next();
