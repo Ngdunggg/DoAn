@@ -369,4 +369,320 @@ public class homeAdmin {
         }
         return resultSet.getString(1);
     }
+
+    public static String avgOfYearVenue(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "'";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(Math.ceil((double) resultSet.getInt(1)/12));
+        return monthRevenue;
+    }
+
+    public static String sumOfYearVenue(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "'";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(resultSet.getInt(1));
+        return monthRevenue;
+    }
+
+    public static String sumOfVehicle(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+                "where time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "'";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(resultSet.getInt(1));
+        return monthRevenue;
+    }
+
+    public static String sumOfMotor(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+                "where (ticket_type_id = 2 or ticket_type_id = 1) and (time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "')";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(resultSet.getInt(1));
+        return monthRevenue;
+    }
+
+    public static String avgOfMotor(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+                "where (ticket_type_id = 2 or ticket_type_id = 1) and (time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "')";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(Math.ceil((double) resultSet.getInt(1)/12));
+        return monthRevenue;
+    }
+
+    public static String avgOfCar(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+                "where (ticket_type_id = 3 or ticket_type_id = 4) and (time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "')";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(Math.ceil((double) resultSet.getInt(1)/12));
+        return monthRevenue;
+    }
+
+    public static String sumOfCar(String year) throws SQLException {
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_type_id) as sumOfVehicle FROM public.ticket\n" +
+                "where (ticket_type_id = 3 or ticket_type_id = 4) and (time_out > '01-01-" + year + "' and time_out < '12-31-" + year + "')";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        String monthRevenue = String.valueOf(resultSet.getInt(1));
+        return monthRevenue;
+    }
+    public static Map<String, Integer> revenuePerMonth(String year) throws SQLException {
+        Map<String, Integer> permonth = new HashMap<String, Integer>();
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '01-01-" + year + "' and time_out < '01-31-" + year + "'";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        Integer monthRevenue = resultSet.getInt(1);
+        permonth.put("January", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '02-01-" + year + "' and time_out < '02-28-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("Ferbuary", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '03-01-" + year + "' and time_out < '03-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("March", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '04-01-" + year + "' and time_out < '04-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("April", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '05-01-" + year + "' and time_out < '05-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("May", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '06-01-" + year + "' and time_out < '06-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("June", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '07-01-" + year + "' and time_out < '07-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("July", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '08-01-" + year + "' and time_out < '08-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("August", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '09-01-" + year + "' and time_out < '09-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("September", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '10-01-" + year + "' and time_out < '10-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("October", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '11-01-" + year + "' and time_out < '11-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("November", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT sum(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '12-01-" + year + "' and time_out < '12-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("December", monthRevenue);
+
+        return permonth;
+    }
+
+    public static Map<String, Integer> vehiclePerMonth(String year) throws SQLException {
+        Map<String, Integer> permonth = new HashMap<String, Integer>();
+        String url = dotenv.PostgreUrl;
+        String username = dotenv.name;
+        String password = dotenv.password;
+        Connection con = DriverManager.getConnection(url, username, password);
+        st = con.createStatement();
+
+        String sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '01-01-" + year + "' and time_out < '01-31-" + year + "'";
+        ResultSet resultSet = st.executeQuery(sql);
+        resultSet.next();
+        Integer monthRevenue = resultSet.getInt(1);
+        permonth.put("January", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '02-01-" + year + "' and time_out < '02-28-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("Ferbuary", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '03-01-" + year + "' and time_out < '03-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("March", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '04-01-" + year + "' and time_out < '04-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("April", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '05-01-" + year + "' and time_out < '05-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("May", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '06-01-" + year + "' and time_out < '06-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("June", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '07-01-" + year + "' and time_out < '07-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("July", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '08-01-" + year + "' and time_out < '08-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("August", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '09-01-" + year + "' and time_out < '09-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("September", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '10-01-" + year + "' and time_out < '10-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("October", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '11-01-" + year + "' and time_out < '11-30-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("November", monthRevenue);
+//        res.add(permonth);
+
+        sql = "SELECT count(ticket_cost) as revenue FROM public.ticket\n" +
+                "where time_out > '12-01-" + year + "' and time_out < '12-31-" + year + "'";
+        resultSet = st.executeQuery(sql);
+        resultSet.next();
+        monthRevenue = resultSet.getInt(1);
+        permonth.put("December", monthRevenue);
+
+        return permonth;
+    }
 }
