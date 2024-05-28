@@ -4,7 +4,15 @@
  */
 package com.mycompany.mytest;
 
-import java.awt.EventQueue;
+import BackEnd.Database.homeAdmin;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -15,9 +23,19 @@ public class DoanhThu extends javax.swing.JFrame {
     /**
      * Creates new form DoanhThu
      */
+    public static String year_static = null;
     public DoanhThu() {
         initComponents();
         setLocationRelativeTo(null);
+//        year_static = String.valueOf(btChonNam.getYear());
+//        btChonNam.setValue(2024);
+//        year_static = String.valueOf(btChonNam.getYear());
+        solve();
+    }
+
+    public void solve() {
+        JOptionPane.showMessageDialog(null ,"Nhập năm để thống kê doanh thu", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        btChonNam.setValue(0);
     }
 
     /**
@@ -46,6 +64,83 @@ public class DoanhThu extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1001, 730));
+
+        btChonNam.addPropertyChangeListener("year", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                year_static = String.valueOf(btChonNam.getYear());
+                try {
+                    txtTongDoanhThu.setText(homeAdmin.sumOfYearVenue(year_static));
+                    txtDoanhThuTB.setText(homeAdmin.avgOfYearVenue(year_static));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                Map<String, Integer> res = null;
+                try {
+                    res = homeAdmin.revenuePerMonth(year_static);
+                    Optional<Map.Entry<String, Integer>> maxEntry = res.entrySet()
+                            .stream()
+                            .max(Map.Entry.comparingByValue());
+                    maxEntry.ifPresent(entry ->
+                            txtThangDoanhThuMax.setText(entry.getKey()));
+                    Integer Jan = res.get("January");
+                    Integer Feb = res.get("Ferbuary");
+                    Integer Mar = res.get("March");
+                    Integer Apr = res.get("April");
+                    Integer May = res.get("May");
+                    Integer June = res.get("June");
+                    Integer July = res.get("July");
+                    Integer Aug = res.get("August");
+                    Integer Sep = res.get("September");
+                    Integer Oct = res.get("October");
+                    Integer Nov = res.get("November");
+                    Integer Dec = res.get("December");
+                    DefaultTableModel tableModel = new DefaultTableModel();
+                    String[] cols = {"Tháng", "Doanh Thu"};
+                    tableModel.setColumnIdentifiers(cols);
+                    String row[] = new String[2];
+                    row[0] = "Tháng 1";
+                    row[1] = String.valueOf(Jan);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 2";
+                    row[1] = String.valueOf(Feb);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 3";
+                    row[1] = String.valueOf(Mar);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 4";
+                    row[1] = String.valueOf(Apr);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 5";
+                    row[1] = String.valueOf(May);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 6";
+                    row[1] = String.valueOf(June);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 7";
+                    row[1] = String.valueOf(July);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 8";
+                    row[1] = String.valueOf(Aug);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 9";
+                    row[1] = String.valueOf(Sep);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 10";
+                    row[1] = String.valueOf(Oct);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 11";
+                    row[1] = String.valueOf(Nov);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 12";
+                    row[1] = String.valueOf(Dec);
+                    tableModel.addRow(row);
+                    jTable1.setModel(tableModel);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 50)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -138,7 +233,12 @@ public class DoanhThu extends javax.swing.JFrame {
         btBieuDo.setText("Biểu Đồ");
         btBieuDo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btBieuDoActionPerformed(evt);
+                try {
+                    btBieuDoActionPerformed(evt);
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(null ,"Doanh thu năm nay là 0", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -191,12 +291,13 @@ public class DoanhThu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+
     private void btQuayLaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btQuayLaiActionPerformed
         this.dispose();
         new Home().showPlThongKeDT();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
-    private void btBieuDoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btBieuDoActionPerformed
+    private void btBieuDoActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btBieuDoActionPerformed
         BDDoanhThu dt = new BDDoanhThu();
         dt.createAndShowGUI();
     }//GEN-LAST:event_btBieuDoActionPerformed
@@ -208,7 +309,7 @@ public class DoanhThu extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -247,9 +348,9 @@ public class DoanhThu extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    public javax.swing.JTable jTable1;
     private javax.swing.JTextField txtDoanhThuTB;
     private javax.swing.JTextField txtThangDoanhThuMax;
-    private javax.swing.JTextField txtTongDoanhThu;
+    private JTextField txtTongDoanhThu;
     // End of variables declaration//GEN-END:variables
 }

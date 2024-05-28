@@ -4,11 +4,18 @@
  */
 package com.mycompany.mytest;
 
-import java.awt.*;
-import java.util.List;
-import java.util.ArrayList;
+import BackEnd.Database.homeAdmin;
+
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
+import java.awt.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class BDDoanhThu extends JPanel
 {
@@ -50,7 +57,7 @@ public class BDDoanhThu extends JPanel
         barPanel.removeAll();
         labelPanel.removeAll();
 
-        int maxValue = 0;
+        int maxValue = 1;
 
         for (Bar bar: bars)
             maxValue = Math.max(maxValue, bar.getValue());
@@ -136,24 +143,38 @@ public class BDDoanhThu extends JPanel
         }
     }
 
-    public static void createAndShowGUI()
-    {
+    public static void createAndShowGUI() throws SQLException {
+        Map<String, Integer> res = null;
+        String year = DoanhThu.year_static;
+        res = homeAdmin.revenuePerMonth(year);
+        Integer Jan = res.get("January");
+        Integer Feb = res.get("Ferbuary");
+        Integer Mar = res.get("March");
+        Integer Apr = res.get("April");
+        Integer May = res.get("May");
+        Integer June = res.get("June");
+        Integer July = res.get("July");
+        Integer Aug = res.get("August");
+        Integer Sep = res.get("September");
+        Integer Oct = res.get("October");
+        Integer Nov = res.get("November");
+        Integer Dec = res.get("December");
         BDDoanhThu panel = new BDDoanhThu();
-        panel.addHistogramColumn("A", 150, Color.gray);
-        panel.addHistogramColumn("B", 690, Color.gray);
-        panel.addHistogramColumn("C", 510, Color.gray);
-        panel.addHistogramColumn("D", 570, Color.gray);
-        panel.addHistogramColumn("E", 180, Color.gray);
-        panel.addHistogramColumn("F", 504, Color.gray);
-        panel.addHistogramColumn("A", 150, Color.gray);
-        panel.addHistogramColumn("B", 690, Color.gray);
-        panel.addHistogramColumn("C", 510, Color.gray);
-        panel.addHistogramColumn("D", 570, Color.gray);
-        panel.addHistogramColumn("E", 180, Color.gray);
-        panel.addHistogramColumn("F", 504, Color.gray);
+        panel.addHistogramColumn("Tháng 1", Jan, Color.red);
+        panel.addHistogramColumn("Tháng 2", Feb, Color.yellow);
+        panel.addHistogramColumn("Tháng 3", Mar, Color.gray);
+        panel.addHistogramColumn("Tháng 4", Apr, Color.blue);
+        panel.addHistogramColumn("Tháng 5", May, Color.white);
+        panel.addHistogramColumn("Tháng 6", June, Color.green);
+        panel.addHistogramColumn("Tháng 7", July, Color.orange);
+        panel.addHistogramColumn("Tháng 8", Aug, Color.pink);
+        panel.addHistogramColumn("Tháng 9", Sep, Color.darkGray);
+        panel.addHistogramColumn("Tháng 10", Oct, Color.red);
+        panel.addHistogramColumn("Tháng 11", Nov, Color.blue);
+        panel.addHistogramColumn("Tháng 12", Dec, Color.green);
         panel.layoutHistogram();
 
-        JFrame frame = new JFrame("Histogram Panel");
+        JFrame frame = new JFrame("Thống kê doanh thu");
         frame.add( panel );
         frame.setLocationByPlatform( true );
         frame.pack();
@@ -166,7 +187,11 @@ public class BDDoanhThu extends JPanel
         {
             public void run()
             {
-                createAndShowGUI();
+                try {
+                    createAndShowGUI();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

@@ -4,18 +4,34 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.homeAdmin;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
+import java.util.Map;
+
 /**
  *
  * @author ASUS
  */
 public class TKLuotGui extends javax.swing.JFrame {
 
+    public static String year_static = "0";
     /**
      * Creates new form TKLhoutGui
      */
     public TKLuotGui() {
         initComponents();
         setLocationRelativeTo(null);
+        solve();
+    }
+
+    public void solve() {
+        JOptionPane.showMessageDialog(null ,"Nhập năm để thống kê lượt gửi", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        btChonNam.setValue(0);
     }
 
     /**
@@ -48,6 +64,81 @@ public class TKLuotGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1110, 730));
+
+        btChonNam.addPropertyChangeListener("year", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                try {
+                    year_static = String.valueOf(btChonNam.getYear());
+                    txtTongLuotGui.setText(homeAdmin.sumOfVehicle(String.valueOf(btChonNam.getYear())));
+                    txtLGXeMay.setText(homeAdmin.sumOfMotor(String.valueOf(btChonNam.getYear())));
+                    txtLGOto.setText(homeAdmin.sumOfCar(String.valueOf(btChonNam.getYear())));
+                    txtTBLGXeMay.setText(homeAdmin.avgOfMotor(String.valueOf(btChonNam.getYear())));
+                    txtTBLGOto.setText(homeAdmin.avgOfCar(String.valueOf(btChonNam.getYear())));
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                Map<String, Integer> res = null;
+                try {
+                    res = homeAdmin.vehiclePerMonth(year_static);
+                    Integer Jan = res.get("January");
+                    Integer Feb = res.get("Ferbuary");
+                    Integer Mar = res.get("March");
+                    Integer Apr = res.get("April");
+                    Integer May = res.get("May");
+                    Integer June = res.get("June");
+                    Integer July = res.get("July");
+                    Integer Aug = res.get("August");
+                    Integer Sep = res.get("September");
+                    Integer Oct = res.get("October");
+                    Integer Nov = res.get("November");
+                    Integer Dec = res.get("December");
+                    DefaultTableModel tableModel = new DefaultTableModel();
+                    String[] cols = {"Tháng", "Doanh Thu"};
+                    tableModel.setColumnIdentifiers(cols);
+                    String row[] = new String[2];
+                    row[0] = "Tháng 1";
+                    row[1] = String.valueOf(Jan);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 2";
+                    row[1] = String.valueOf(Feb);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 3";
+                    row[1] = String.valueOf(Mar);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 4";
+                    row[1] = String.valueOf(Apr);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 5";
+                    row[1] = String.valueOf(May);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 6";
+                    row[1] = String.valueOf(June);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 7";
+                    row[1] = String.valueOf(July);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 8";
+                    row[1] = String.valueOf(Aug);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 9";
+                    row[1] = String.valueOf(Sep);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 10";
+                    row[1] = String.valueOf(Oct);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 11";
+                    row[1] = String.valueOf(Nov);
+                    tableModel.addRow(row);
+                    row[0] = "Tháng 12";
+                    row[1] = String.valueOf(Dec);
+                    tableModel.addRow(row);
+                    jTable1.setModel(tableModel);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 50)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -178,7 +269,11 @@ public class TKLuotGui extends javax.swing.JFrame {
         btBieuDo.setText("Biểu Đồ");
         btBieuDo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btBieuDoActionPerformed(evt);
+                try {
+                    btBieuDoActionPerformed(evt);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -239,7 +334,7 @@ public class TKLuotGui extends javax.swing.JFrame {
         new Home().showPlThongKeDT();
     }//GEN-LAST:event_btQuayLaiActionPerformed
 
-    private void btBieuDoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btBieuDoActionPerformed
+    private void btBieuDoActionPerformed(java.awt.event.ActionEvent evt) throws SQLException {//GEN-FIRST:event_btBieuDoActionPerformed
         BDLuotGui lg = new BDLuotGui();
         lg.createAndShowGUI();
     }//GEN-LAST:event_btBieuDoActionPerformed
@@ -300,6 +395,6 @@ public class TKLuotGui extends javax.swing.JFrame {
     private javax.swing.JTextField txtLGXeMay;
     private javax.swing.JTextField txtTBLGOto;
     private javax.swing.JTextField txtTBLGXeMay;
-    private javax.swing.JTextField txtTongLuotGui;
+    private JTextField txtTongLuotGui;
     // End of variables declaration//GEN-END:variables
 }
