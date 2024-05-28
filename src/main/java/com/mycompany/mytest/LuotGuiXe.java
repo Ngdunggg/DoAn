@@ -4,23 +4,22 @@
  */
 package com.mycompany.mytest;
 
+import BackEnd.Database.database;
 import BackEnd.Database.dotenv;
+import BackEnd.Database.homeAdmin;
 import com.toedter.calendar.JDateChooser;
 
-import java.awt.*;
-import javax.swing.JLabel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import BackEnd.Database.database;
-import BackEnd.Database.homeAdmin;
 /**
  *
  * @author ASUS
@@ -267,7 +266,7 @@ public class LuotGuiXe extends JFrame {
 
         jLabel3.setFont(new Font("Segoe UI", 1, 36)); // NOI18N
         jLabel3.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel3.setText("Thống kê lượt gửi xe ");
+        jLabel3.setText("Lượt gửi xe ");
 
         jPanel4.setBorder(BorderFactory.createTitledBorder(null, "Doanh Thu", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Segoe UI", 0, 18))); // NOI18N
 

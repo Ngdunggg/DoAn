@@ -8,6 +8,8 @@ import BackEnd.Database.database;
 import BackEnd.Database.dotenv;
 import BackEnd.Database.homeNv;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,15 +17,11 @@ import java.security.SecureRandom;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
 
 
 /**
@@ -141,6 +139,7 @@ public class HomeForNV extends JFrame {
         Show.revalidate();
     }
     public void showTableTicket() {
+        String currentTime = java.sql.Timestamp.from(Instant.now()).toString();
         DefaultTableModel tableModel = new DefaultTableModel();
         String[] colsName = {"Mã vé", "Tên Khách Hàng", "Số điện thoại","Biển số xe","Loại xe", "Loai vé","Ngày đăng ký","Tiền"};
         tableModel.setColumnIdentifiers(colsName);
@@ -149,7 +148,7 @@ public class HomeForNV extends JFrame {
                 "FROM ticket " +
                 "inner join ticket_type on ticket_type.id = ticket.ticket_type_id " +
                 "INNER JOIN vehicle ON vehicle.id = vehicle_id " +
-                "WHERE ticket_type_id = 2 OR ticket_type_id = 4";
+                "WHERE (ticket_type_id = 2 OR ticket_type_id = 4) and ticket.out_date > '" + currentTime + "'";
 
         String url = dotenv.PostgreUrl;
         String username = dotenv.name;
@@ -1655,11 +1654,12 @@ public class HomeForNV extends JFrame {
         String password = dotenv.password;
 
         String bienSo = textBienSo.getText();
+        String currentTime = java.sql.Timestamp.from(Instant.now()).toString();
         int ticketTypeId = 0;
 
-        String sql = "select ticket.vehicle_id, ticket.ticket_type_id\n" +
+        String sql = "select ticket.vehicle_id, ticket.ticket_type_id, ticket.out_date\n" +
                 "from ticket \n" +
-                "where (ticket_type_id = 2 or ticket_type_id = 4) and (vehicle_id = '" + bienSo + "');";
+                "where (ticket_type_id = 2 or ticket_type_id = 4) and (vehicle_id = '" + bienSo + "') and (out_date > '" + currentTime + "');";
 
         String bienSoMonth = "ngon";
         System.out.println(sql);
@@ -1682,7 +1682,6 @@ public class HomeForNV extends JFrame {
 
         if (!bienSoMonth.equals("ngon")) {
             txtBienSo.setText(bienSoMonth);
-            String currentTime = java.sql.Timestamp.from(Instant.now()).toString();
             textGioVao.setText(currentTime);
             if (ticketTypeId == 2) {
                 boxLuaChonLoaiXe.setSelectedItem("xe máy");
@@ -1705,7 +1704,6 @@ public class HomeForNV extends JFrame {
                 textBienSo.setText("");
                 Timestamp time1 = new Timestamp(System.currentTimeMillis());
                 textGioVao.setText(String.valueOf(time1));
-
                 showTableXeRa();
             } else {
                 boxLuaChonLoaiXe.setSelectedItem("ô tô");
